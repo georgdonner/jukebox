@@ -1,5 +1,14 @@
 const path = require('path');
 const express = require('express');
+const low = require('lowdb');
+const FileSync = require('lowdb/adapters/FileSync');
+
+const adapter = new FileSync('db.json');
+const db = low(adapter);
+
+db.defaults({ users: [], current: {} })
+  .write();
+
 require('dotenv').config();
 
 const app = express();
@@ -17,8 +26,13 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
+  db.get('users')
+    .push({ id: socket.id, queue: [] })
+    .write();
   socket.emit('news', { hello: 'world' });
-  socket.on('my other event', (data) => {
-    console.log(data);
+  socket.on('disconnect', () => {
+    db.get('users')
+      .remove({ id: socket.id })
+      .write();
   });
 });
