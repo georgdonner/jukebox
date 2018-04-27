@@ -5,9 +5,9 @@ class QueueDb {
       .write();
   }
 
-  addUser(id) {
+  addUser(id, username) {
     this.db.get('users')
-      .push({ id, queue: [] })
+      .push({ id, username, queue: [] })
       .write();
   }
 
@@ -45,7 +45,7 @@ class QueueDb {
       // eslint-disable-next-line no-loop-func
       sortedUsers.forEach((user) => {
         if (i < user.queue.length) {
-          queue.push({ track: user.queue[i], user: user.id });
+          queue.push({ track: user.queue[i], user: user.username });
         }
       });
       i += 1;
