@@ -7,7 +7,8 @@
   "author": "Georg Donner",
   "license": "MIT",
   "scripts": {
-    "client": "parcel watch client/index.html -d build --public-url ./ --no-hmr"
+    "client": "parcel watch client/index.html -d build --public-url ./ --no-hmr",
+    "setup": "node setup/auth"
   },
   "devDependencies": {
     "eslint": "^4.19.1",
