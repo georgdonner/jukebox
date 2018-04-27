@@ -4,20 +4,23 @@ import io from 'socket.io-client';
 import { h, app } from 'hyperapp';
 
 const socket = io.connect('http://localhost:8080');
-// socket.emit('new track', { uri: 'spotify:track:3EI5hCVItB6s7v6APkYJUW' });
 socket.on('queue update', (state) => {
-  console.log(state);
+  // eslint-disable-next-line no-use-before-define
+  main.updateState(state);
 });
 
 const state = {
   username: null,
   usernameSubmitted: false,
+  trackInput: '',
+  merged: [],
 };
 
 const actions = {
   updateState: upd => () => (upd),
   setUsername: username => () => ({ username }),
   submitUsername: () => () => ({ usernameSubmitted: true }),
+  setTrackInput: input => () => ({ trackInput: input }),
 };
 
 const view = (state, actions) => {
@@ -31,11 +34,38 @@ const view = (state, actions) => {
     <input
       type="text"
       placeholder="username"
+      value={state.username}
       oninput={(e) => { actions.setUsername(e.target.value); }}
       onkeypress={changeUsername}
     />
   );
-  const screen = state.usernameSubmitted ? <h1>Welcome!</h1> : input;
+  const submitTrack = (e) => {
+    if (e.keyCode === 13) { // ENTER
+      actions.setTrackInput('');
+      socket.emit('new track', { uri: state.trackInput });
+    }
+  };
+  const queue = state.merged.map(({ track, user }, index) => (
+    <li key={track.id}>
+      <b>{`${index + 1}: `}</b>
+      {`${track.name} - ${track.artists[0].name}, added by ${user}`}
+    </li>
+  ));
+  const mainView = (
+    <div>
+      <input
+        type="text"
+        placeholder="Enter a Spotify URI"
+        value={state.trackInput}
+        oninput={(e) => { actions.setTrackInput(e.target.value); }}
+        onkeypress={submitTrack}
+      />
+      <ul>
+        {queue}
+      </ul>
+    </div>
+  );
+  const screen = state.usernameSubmitted ? mainView : input;
   return (
     <div>
       {screen}
@@ -43,4 +73,4 @@ const view = (state, actions) => {
   );
 };
 
-app(state, actions, view, document.body);
+const main = app(state, actions, view, document.body);

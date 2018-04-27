@@ -32,12 +32,13 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
   socket.on('username', (data) => {
     db.addUser(socket.id, data.username);
+    socket.emit('queue update', db.getState());
   });
 
   socket.on('new track', async (track) => {
     const info = await spotify.getTrackInfo(track.uri);
     db.addTrack(socket.id, info);
-    socket.emit('queue update', db.getState());
+    io.emit('queue update', db.getState());
   });
 
   socket.on('disconnect', () => {
