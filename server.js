@@ -6,13 +6,12 @@ const path = require('path');
 const express = require('express');
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
+const QueueDb = require('./utils/queueDb');
 const Spotify = require('./utils/spotify');
 
 const adapter = new FileSync('db.json');
-const db = low(adapter);
-
-db.defaults({ users: [], current: {} })
-  .write();
+const lowdb = low(adapter);
+const db = new QueueDb(lowdb);
 
 const spotify = new Spotify(process.env.ACCESS_TOKEN);
 
@@ -31,20 +30,12 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-  db.get('users')
-    .push({ id: socket.id, queue: [] })
-    .write();
+  db.addUser(socket.id);
   socket.on('new track', async (track) => {
     const info = await spotify.getTrackInfo(track.uri);
-    db.get('users')
-      .find({ id: socket.id })
-      .get('queue')
-      .push(info)
-      .write();
+    db.addTrack(socket.id, info);
   });
   socket.on('disconnect', () => {
-    db.get('users')
-      .remove({ id: socket.id })
-      .write();
+    db.removeUser();
   });
 });
