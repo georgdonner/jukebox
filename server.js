@@ -34,6 +34,7 @@ io.on('connection', (socket) => {
   socket.on('new track', async (track) => {
     const info = await spotify.getTrackInfo(track.uri);
     db.addTrack(socket.id, info);
+    socket.emit('queue update', db.getState());
   });
   socket.on('disconnect', () => {
     db.removeUser();
