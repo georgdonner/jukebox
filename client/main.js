@@ -3,13 +3,14 @@ import io from 'socket.io-client';
 // eslint-disable-next-line no-unused-vars
 import { h, app } from 'hyperapp';
 
-const socket = io.connect('http://localhost:8080');
+const socket = io.connect();
 socket.on('queue update', (state) => {
   // eslint-disable-next-line no-use-before-define
   main.updateState(state);
 });
 
 const state = {
+  playing: false,
   username: null,
   usernameSubmitted: false,
   trackInput: '',
@@ -21,6 +22,7 @@ const actions = {
   setUsername: username => () => ({ username }),
   submitUsername: () => () => ({ usernameSubmitted: true }),
   setTrackInput: input => () => ({ trackInput: input }),
+  togglePlaying: () => state => ({ playing: !state.playing }),
 };
 
 const view = (state, actions) => {
@@ -45,6 +47,11 @@ const view = (state, actions) => {
       socket.emit('new track', { uri: state.trackInput });
     }
   };
+  const playPause = () => {
+    if (!state.playing) socket.emit('play');
+    else socket.emit('pause');
+    actions.togglePlaying();
+  };
   const queue = state.merged.map(({ track, user }, index) => (
     <li key={track.id}>
       <b>{`${index + 1}: `}</b>
@@ -60,6 +67,9 @@ const view = (state, actions) => {
         oninput={(e) => { actions.setTrackInput(e.target.value); }}
         onkeypress={submitTrack}
       />
+      <button type="button" onclick={playPause}>
+        {state.playing ? 'Pause' : 'Play'}
+      </button>
       <ul>
         {queue}
       </ul>

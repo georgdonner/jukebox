@@ -25,6 +25,22 @@ class QueueDb {
       .write();
   }
 
+  nextTrack() {
+    const state = this.db.getState();
+    const queue = QueueDb.mergeQueues(state);
+    if (queue.length === 0) return null;
+    const { userId, track } = queue[0];
+    this.db.get('users')
+      .find({ id: userId })
+      .get('queue')
+      .shift()
+      .write();
+    this.db.get('current')
+      .assign({ user: userId, track })
+      .write();
+    return track;
+  }
+
   getState() {
     const state = this.db.getState();
     return { ...state, merged: QueueDb.mergeQueues(state) };
@@ -45,7 +61,7 @@ class QueueDb {
       // eslint-disable-next-line no-loop-func
       sortedUsers.forEach((user) => {
         if (i < user.queue.length) {
-          queue.push({ track: user.queue[i], user: user.username });
+          queue.push({ track: user.queue[i], user: user.username, userId: user.id });
         }
       });
       i += 1;
