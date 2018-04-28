@@ -54,8 +54,8 @@ class QueueDb {
       usersCopy.slice(currentUserIndex + 1).concat(usersCopy.slice(0, currentUserIndex + 1)) :
       usersCopy;
     const queue = [];
-    const queueLenghts = users.map(user => user.queue.length);
-    const totalTracks = queueLenghts.reduce((sum, val) => sum + val);
+    const queueLengths = users.map(user => user.queue.length);
+    const totalTracks = queueLengths.reduce((sum, val) => sum + val, 0);
     let i = 0;
     while (queue.length < totalTracks) {
       // eslint-disable-next-line no-loop-func
