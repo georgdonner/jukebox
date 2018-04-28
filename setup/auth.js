@@ -1,5 +1,7 @@
 const fs = require('fs');
 const express = require('express');
+const low = require('lowdb');
+const FileSync = require('lowdb/adapters/FileSync');
 const request = require('request-promise-native');
 require('dotenv').config();
 
@@ -23,6 +25,20 @@ app.get('/login', (req, res) => {
   res.redirect(url);
 });
 
+const saveCredentials = (data) => {
+  const adapter = new FileSync('db.json');
+  const db = low(adapter);
+  db.defaults({ users: [], current: {}, credentials: {} })
+    .write();
+  const credentials = {
+    accessToken: data.access_token,
+    expires: Date.now() + data.expires_in,
+  };
+  db.get('credentials')
+    .assign(credentials)
+    .write();
+};
+
 app.get('/token', async (req) => {
   const { code } = req.query;
   const data = await request.post('https://accounts.spotify.com/api/token', {
@@ -35,20 +51,8 @@ app.get('/token', async (req) => {
     },
     json: true,
   });
-  const formatted = [
-    `ACCESS_TOKEN=${data.access_token}`,
-    `REFRESH_TOKEN=${data.refresh_token}`,
-    `EXPIRES=${Date.now() + data.expires_in}`,
-  ];
-  const env = fs.readFileSync('.env', 'utf8');
-  const lines = env.split('\n');
-  const filtered = lines.filter(line => (
-    !line.includes('ACCESS_TOKEN') && !line.includes('REFRESH_TOKEN') && !line.includes('EXPIRES')
-  ));
-  if (lines.length !== filtered.length) {
-    fs.writeFileSync('.env', filtered.join('\n'));
-  }
-  fs.appendFile('.env', `\n${formatted.join('\n')}`, (err) => {
+  saveCredentials(data);
+  fs.appendFile('.env', `\nREFRESH_TOKEN=${data.refresh_token}`, (err) => {
     if (err) throw err;
     else {
       // eslint-disable-next-line no-console
@@ -56,10 +60,6 @@ app.get('/token', async (req) => {
       process.exit();
     }
   });
-});
-
-app.get('/', (req, res) => {
-  res.send('Auth successful!');
 });
 
 app.listen(port, () => {

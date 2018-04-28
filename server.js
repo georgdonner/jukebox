@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-if (!process.env.ACCESS_TOKEN) throw Error('No access token provided');
+if (!process.env.REFRESH_TOKEN) throw Error('No refresh token provided');
 
 const path = require('path');
 const express = require('express');
@@ -13,7 +13,8 @@ const adapter = new FileSync('db.json');
 const lowdb = low(adapter);
 const db = new QueueDb(lowdb);
 
-const spotify = new Spotify(process.env.ACCESS_TOKEN);
+const { accessToken } = db.getCredentials();
+const spotify = new Spotify(accessToken);
 
 const app = express();
 const server = require('http').Server(app);
@@ -28,6 +29,25 @@ app.use(express.static(path.resolve('build')));
 app.get('/', (req, res) => {
   res.sendFile(path.resolve('build', 'index.html'));
 });
+
+setInterval(async () => {
+  const auth = db.getCredentials();
+  if (auth.expires < Date.now() - 10000) {
+    const credentials = await spotify.updateToken();
+    db.setCredentials(credentials);
+  }
+  const playback = await spotify.getPlayback();
+  const { current } = db.getState();
+  if (current.track) {
+    if (!playback.item || !playback.is_playing) {
+      const next = db.nextTrack();
+      if (next) {
+        spotify.play(next.uri);
+        io.emit('queue update', db.getState());
+      }
+    }
+  }
+}, 5000);
 
 io.on('connection', (socket) => {
   socket.on('username', (data) => {

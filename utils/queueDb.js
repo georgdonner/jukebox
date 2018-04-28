@@ -41,6 +41,16 @@ class QueueDb {
     return track;
   }
 
+  getCredentials() {
+    return this.db.get('credentials').value();
+  }
+
+  setCredentials(credentials) {
+    return this.db.get('credentials')
+      .assign(credentials)
+      .write();
+  }
+
   getState() {
     const state = this.db.getState();
     return { ...state, queue: QueueDb.mergeQueues(state) };
