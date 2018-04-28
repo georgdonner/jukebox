@@ -43,7 +43,7 @@ class QueueDb {
 
   getState() {
     const state = this.db.getState();
-    return { ...state, merged: QueueDb.mergeQueues(state) };
+    return { ...state, queue: QueueDb.mergeQueues(state) };
   }
 
   static mergeQueues(state) {

@@ -14,7 +14,7 @@ const state = {
   username: null,
   usernameSubmitted: false,
   trackInput: '',
-  merged: [],
+  queue: [],
 };
 
 const actions = {
@@ -23,6 +23,7 @@ const actions = {
   submitUsername: () => () => ({ usernameSubmitted: true }),
   setTrackInput: input => () => ({ trackInput: input }),
   togglePlaying: () => state => ({ playing: !state.playing }),
+  play: () => () => ({ playing: true }),
 };
 
 const view = (state, actions) => {
@@ -52,7 +53,11 @@ const view = (state, actions) => {
     else socket.emit('pause');
     actions.togglePlaying();
   };
-  const queue = state.merged.map(({ track, user }, index) => (
+  const nextTrack = () => {
+    socket.emit('next');
+    actions.play();
+  };
+  const queue = state.queue.map(({ track, user }, index) => (
     <li key={track.id}>
       <b>{`${index + 1}: `}</b>
       {`${track.name} - ${track.artists[0].name}, added by ${user}`}
@@ -70,6 +75,9 @@ const view = (state, actions) => {
       <button type="button" onclick={playPause}>
         {state.playing ? 'Pause' : 'Play'}
       </button>
+      {state.queue.length > 0 ? (
+        <button type="button" onclick={nextTrack}>Next</button>
+      ) : null}
       <ul>
         {queue}
       </ul>

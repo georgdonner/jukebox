@@ -56,6 +56,14 @@ io.on('connection', (socket) => {
 
   socket.on('pause', () => spotify.pause());
 
+  socket.on('next', () => {
+    const next = db.nextTrack();
+    if (next) {
+      spotify.play(next.uri);
+      io.emit('queue update', db.getState());
+    }
+  });
+
   socket.on('disconnect', () => {
     db.removeUser();
   });
