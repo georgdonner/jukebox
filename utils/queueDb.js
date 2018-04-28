@@ -1,6 +1,7 @@
 class QueueDb {
   constructor(db) {
     this.db = db;
+    this.db.unset('current').unset('users').write();
     this.db.defaults({ users: [], current: {} })
       .write();
   }
