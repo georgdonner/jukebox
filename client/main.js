@@ -55,7 +55,6 @@ const view = (state, actions) => {
   };
   const nextTrack = () => {
     socket.emit('next');
-    actions.play();
   };
   const queue = state.queue ? state.queue.map(({ track, user }, index) => (
     <li key={track.id}>
