@@ -13,12 +13,11 @@ class Spotify {
     });
   }
 
-  async getPlayback() {
-    const playback = await request.get('https://api.spotify.com/v1/me/player/currently-playing', {
+  getPlayback() {
+    return request.get('https://api.spotify.com/v1/me/player/currently-playing', {
       auth: { bearer: this.accessToken },
       json: true,
     });
-    return playback;
   }
 
   play(uri) {

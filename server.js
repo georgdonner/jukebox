@@ -38,13 +38,11 @@ setInterval(async () => {
   }
   const playback = await spotify.getPlayback();
   const { current } = db.getState();
-  if (current.track) {
-    if (!playback.item || !playback.is_playing) {
-      const next = db.nextTrack();
-      if (next) {
-        spotify.play(next.uri);
-        io.emit('queue update', db.getState());
-      }
+  if (current.track && (!playback.item || !playback.is_playing)) {
+    const next = db.nextTrack();
+    if (next) {
+      spotify.play(next.uri);
+      io.emit('queue update', db.getState());
     }
   }
 }, 5000);
@@ -85,6 +83,6 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    db.removeUser();
+    db.removeUser(socket.id);
   });
 });
