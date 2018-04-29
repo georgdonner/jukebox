@@ -41,7 +41,10 @@ setInterval(async () => {
   if (playback && (current.isPlaying !== playback.is_playing)) {
     db.setPlaying(playback.is_playing);
   }
-  if (current.track && (!playback || !playback.item || !playback.is_playing)) {
+  if (current.track &&
+      (playback && playback.progress_ms === 0) &&
+      (!playback || !playback.item || !playback.is_playing)
+  ) {
     const next = db.nextTrack();
     if (next) {
       spotify.play(next.uri);
