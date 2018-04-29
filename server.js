@@ -38,10 +38,14 @@ setInterval(async () => {
   }
   const playback = await spotify.getPlayback();
   const { current } = db.getState();
-  if (current.track && (!playback.item || !playback.is_playing)) {
+  if (playback && (current.isPlaying !== playback.is_playing)) {
+    db.setPlaying(playback.is_playing);
+  }
+  if (current.track && (!playback || !playback.item || !playback.is_playing)) {
     const next = db.nextTrack();
     if (next) {
       spotify.play(next.uri);
+      db.setPlaying(true);
       io.emit('queue update', db.getState());
     }
   }
@@ -63,16 +67,23 @@ io.on('connection', (socket) => {
     const state = db.getState();
     if (state.current.track) {
       spotify.play();
+      db.setPlaying(true);
+      io.emit('playing', true);
     } else {
       const next = db.nextTrack();
       if (next) {
         spotify.play(next.uri);
+        db.setPlaying(true);
         io.emit('queue update', db.getState());
       }
     }
   });
 
-  socket.on('pause', () => spotify.pause());
+  socket.on('pause', () => {
+    spotify.pause();
+    db.setPlaying(false);
+    io.emit('playing', false);
+  });
 
   socket.on('next', () => {
     const next = db.nextTrack();

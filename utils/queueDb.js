@@ -2,7 +2,7 @@ class QueueDb {
   constructor(db) {
     this.db = db;
     this.db.unset('current').unset('users').write();
-    this.db.defaults({ users: [], current: {} })
+    this.db.defaults({ users: [], current: { isPlaying: false } })
       .write();
   }
 
@@ -40,6 +40,14 @@ class QueueDb {
       .assign({ user: userId, track })
       .write();
     return track;
+  }
+
+  getPlaying() {
+    return this.db.get('current.isPlaying').value();
+  }
+
+  setPlaying(isPlaying) {
+    this.db.set('current.isPlaying', isPlaying).write();
   }
 
   getCredentials() {

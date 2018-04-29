@@ -8,13 +8,15 @@ socket.on('queue update', (state) => {
   // eslint-disable-next-line no-use-before-define
   main.updateState(state);
 });
+socket.on('playing', (isPlaying) => {
+  // eslint-disable-next-line no-use-before-define
+  main.setPlaying(isPlaying);
+});
 
 const state = {
-  playing: false,
   username: null,
   usernameSubmitted: false,
   trackInput: '',
-  queue: [],
 };
 
 const actions = {
@@ -22,8 +24,7 @@ const actions = {
   setUsername: username => () => ({ username }),
   submitUsername: () => () => ({ usernameSubmitted: true }),
   setTrackInput: input => () => ({ trackInput: input }),
-  togglePlaying: () => state => ({ playing: !state.playing }),
-  play: () => () => ({ playing: true }),
+  setPlaying: isPlaying => () => ({ current: { isPlaying } }),
 };
 
 const view = (state, actions) => {
@@ -49,21 +50,20 @@ const view = (state, actions) => {
     }
   };
   const playPause = () => {
-    if (!state.playing) socket.emit('play');
+    if (!state.current.isPlaying) socket.emit('play');
     else socket.emit('pause');
-    actions.togglePlaying();
   };
   const nextTrack = () => {
     socket.emit('next');
     actions.play();
   };
-  const queue = state.queue.map(({ track, user }, index) => (
+  const queue = state.queue ? state.queue.map(({ track, user }, index) => (
     <li key={track.id}>
       <b>{`${index + 1}: `}</b>
       {`${track.name} - ${track.artists[0].name}, added by ${user}`}
     </li>
-  ));
-  const mainView = (
+  )) : null;
+  const mainView = state.current && state.queue ? (
     <div>
       <input
         type="text"
@@ -73,7 +73,7 @@ const view = (state, actions) => {
         onkeypress={submitTrack}
       />
       <button type="button" onclick={playPause}>
-        {state.playing ? 'Pause' : 'Play'}
+        {state.current.isPlaying ? 'Pause' : 'Play'}
       </button>
       {state.queue.length > 0 ? (
         <button type="button" onclick={nextTrack}>Next</button>
@@ -82,7 +82,7 @@ const view = (state, actions) => {
         {queue}
       </ul>
     </div>
-  );
+  ) : <div>Loading...</div>;
   const screen = state.usernameSubmitted ? mainView : input;
   return (
     <div>
