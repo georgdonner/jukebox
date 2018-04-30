@@ -1,15 +1,14 @@
-/* eslint-disable no-shadow */
+/* eslint-disable no-shadow, no-use-before-define */
 import io from 'socket.io-client';
 // eslint-disable-next-line no-unused-vars
 import { h, app } from 'hyperapp';
+import './scss/main.scss';
 
 const socket = io.connect();
 socket.on('queue update', (state) => {
-  // eslint-disable-next-line no-use-before-define
   main.updateState(state);
 });
 socket.on('playing', (isPlaying) => {
-  // eslint-disable-next-line no-use-before-define
   main.setPlaying(isPlaying);
 });
 
@@ -35,13 +34,15 @@ const view = (state, actions) => {
     }
   };
   const input = (
-    <input
-      type="text"
-      placeholder="username"
-      value={state.username}
-      oninput={(e) => { actions.setUsername(e.target.value); }}
-      onkeypress={changeUsername}
-    />
+    <div id="username-container">
+      <input
+        type="text"
+        placeholder="Enter your username"
+        value={state.username}
+        oninput={(e) => { actions.setUsername(e.target.value); }}
+        onkeypress={changeUsername}
+      />
+    </div>
   );
   const submitTrack = (e) => {
     if (e.keyCode === 13) { // ENTER
@@ -82,12 +83,7 @@ const view = (state, actions) => {
       </ul>
     </div>
   ) : <div>Loading...</div>;
-  const screen = state.usernameSubmitted ? mainView : input;
-  return (
-    <div>
-      {screen}
-    </div>
-  );
+  return state.usernameSubmitted ? mainView : input;
 };
 
 const main = app(state, actions, view, document.body);
