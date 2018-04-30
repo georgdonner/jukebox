@@ -3,6 +3,7 @@ import io from 'socket.io-client';
 // eslint-disable-next-line no-unused-vars
 import { h, app } from 'hyperapp';
 import Current from './components/current';
+import Controls from './components/controls';
 import './scss/main.scss';
 
 const socket = io.connect();
@@ -72,6 +73,12 @@ const view = (state, actions) => {
   const mainView = state.current && state.queue ? (
     <main>
       {current}
+      <Controls
+        toggle={playPause}
+        next={nextTrack}
+        queue={state.queue}
+        playing={state.current.isPlaying}
+      />
       <input
         type="text"
         placeholder="Enter a Spotify URI"
@@ -79,12 +86,6 @@ const view = (state, actions) => {
         oninput={(e) => { actions.setTrackInput(e.target.value); }}
         onkeypress={submitTrack}
       />
-      <button type="button" onclick={playPause}>
-        {state.current.isPlaying ? 'Pause' : 'Play'}
-      </button>
-      {state.queue.length > 0 ? (
-        <button type="button" onclick={nextTrack}>Next</button>
-      ) : null}
       <ul>
         {queue}
       </ul>

@@ -1,0 +1,23 @@
+#controls {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  margin: .5rem auto;
+
+  i {
+    cursor: pointer;
+  }
+}
+
+.main-control {
+  font-size: 2rem;
+  color: #222;
+}
+
+#next {
+  position: absolute;
+  font-size: 1.25rem;
+  color: #444;
+  padding-top: .33rem;
+  padding-left: 1.5rem;
+}
