@@ -80,6 +80,7 @@ const view = (state, actions) => {
         playing={state.current.isPlaying}
       />
       <input
+        id="main-input"
         type="text"
         placeholder="Enter a Spotify URI"
         value={state.trackInput}
