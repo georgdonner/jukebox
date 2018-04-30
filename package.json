@@ -8,6 +8,7 @@
   "license": "MIT",
   "scripts": {
     "client": "parcel watch client/index.html -d build --public-url ./ --no-hmr",
+    "build": "parcel build client/index.html -d build --public-url ./",
     "setup": "node setup/auth"
   },
   "devDependencies": {

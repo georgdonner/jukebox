@@ -40,6 +40,7 @@ setInterval(async () => {
   const { current } = db.getState();
   if (playback && (current.isPlaying !== playback.is_playing)) {
     db.setPlaying(playback.is_playing);
+    io.emit('playing', playback.is_playing);
   }
   if (current.track &&
       (playback && playback.progress_ms === 0) &&
