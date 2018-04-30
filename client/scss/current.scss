@@ -1,0 +1,25 @@
+#current {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin: 1rem;
+
+  img {
+    max-width: 225px;
+  }
+
+  div {
+    font-size: 1.15rem;
+  }
+  
+  #current-song {
+    padding-top: .75rem;
+    font-weight: 700;
+    color: #222;
+  }
+  
+  #current-artist {
+    padding-top: .25rem;
+    color: #444;
+  }
+}

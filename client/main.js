@@ -2,6 +2,7 @@
 import io from 'socket.io-client';
 // eslint-disable-next-line no-unused-vars
 import { h, app } from 'hyperapp';
+import Current from './components/current';
 import './scss/main.scss';
 
 const socket = io.connect();
@@ -9,7 +10,7 @@ socket.on('queue update', (state) => {
   main.updateState(state);
 });
 socket.on('playing', (isPlaying) => {
-  main.setPlaying(isPlaying);
+  main.current.setPlaying(isPlaying);
 });
 
 const state = {
@@ -23,7 +24,9 @@ const actions = {
   setUsername: username => () => ({ username }),
   submitUsername: () => () => ({ usernameSubmitted: true }),
   setTrackInput: input => () => ({ trackInput: input }),
-  setPlaying: isPlaying => () => ({ current: { isPlaying } }),
+  current: {
+    setPlaying: isPlaying => () => ({ isPlaying }),
+  },
 };
 
 const view = (state, actions) => {
@@ -63,8 +66,12 @@ const view = (state, actions) => {
       {`${track.name} - ${track.artists[0].name}, added by ${user}`}
     </li>
   )) : null;
+  const current = state.current && state.current.track ? (
+    <Current track={state.current.track} />
+  ) : null;
   const mainView = state.current && state.queue ? (
-    <div>
+    <main>
+      {current}
       <input
         type="text"
         placeholder="Enter a Spotify URI"
@@ -81,7 +88,7 @@ const view = (state, actions) => {
       <ul>
         {queue}
       </ul>
-    </div>
+    </main>
   ) : <div>Loading...</div>;
   return state.usernameSubmitted ? mainView : input;
 };
