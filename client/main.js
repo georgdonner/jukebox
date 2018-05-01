@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 import { h, app } from 'hyperapp';
 import Current from './components/current';
 import Controls from './components/controls';
+import Queue from './components/queue';
 import './scss/main.scss';
 
 const socket = io.connect();
@@ -61,12 +62,6 @@ const view = (state, actions) => {
   const nextTrack = () => {
     socket.emit('next');
   };
-  const queue = state.queue ? state.queue.map(({ track, user }, index) => (
-    <li key={track.id}>
-      <b>{`${index + 1}: `}</b>
-      {`${track.name} - ${track.artists[0].name}, added by ${user}`}
-    </li>
-  )) : null;
   const current = state.current && state.current.track ? (
     <Current track={state.current.track} />
   ) : null;
@@ -87,9 +82,7 @@ const view = (state, actions) => {
         oninput={(e) => { actions.setTrackInput(e.target.value); }}
         onkeypress={submitTrack}
       />
-      <ul>
-        {queue}
-      </ul>
+      <Queue queue={state.queue} />
     </main>
   ) : <div>Loading...</div>;
   return state.usernameSubmitted ? mainView : input;

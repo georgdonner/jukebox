@@ -1,0 +1,26 @@
+#queue {
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    tr {
+      font-size: 1rem;
+      border-bottom: 1px solid #e9e9e9;
+    }
+
+    th, td {
+      padding: .75rem 0;
+    }
+
+    th {
+      font-size: .9rem;
+      text-align: left;
+      text-transform: uppercase;
+      color: #444;
+    }
+
+    td {
+      color: #222;
+    }
+  }
+}
