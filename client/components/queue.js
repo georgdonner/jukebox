@@ -5,7 +5,8 @@ import '../scss/queue.scss';
 const convertMs = (ms) => {
   const rounded = 1000 * Math.round(ms / 1000);
   const d = new Date(rounded);
-  return `${d.getUTCMinutes()}:${d.getUTCSeconds()}`;
+  const s = d.getUTCSeconds();
+  return `${d.getUTCMinutes()}:${s >= 10 ? '' : '0'}${s}`;
 };
 
 const Item = ({ track, user }) => (
