@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 import { h, app } from 'hyperapp';
 import Current from './components/current';
 import Controls from './components/controls';
+import Input from './components/input';
 import Queue from './components/queue';
 import './scss/main.scss';
 
@@ -19,6 +20,7 @@ const state = {
   username: null,
   usernameSubmitted: false,
   trackInput: '',
+  allTracks: true,
 };
 
 const actions = {
@@ -29,6 +31,7 @@ const actions = {
   current: {
     setPlaying: isPlaying => () => ({ isPlaying }),
   },
+  toggleQueue: () => state => ({ allTracks: !state.allTracks }),
 };
 
 const view = (state, actions) => {
@@ -49,12 +52,7 @@ const view = (state, actions) => {
       />
     </div>
   );
-  const submitTrack = (e) => {
-    if (e.keyCode === 13) { // ENTER
-      actions.setTrackInput('');
-      socket.emit('new track', { uri: state.trackInput });
-    }
-  };
+  const submitTrack = () => socket.emit('new track', { uri: state.trackInput });
   const playPause = () => {
     if (!state.current.isPlaying) socket.emit('play');
     else socket.emit('pause');
@@ -74,14 +72,7 @@ const view = (state, actions) => {
         queue={state.queue}
         playing={state.current.isPlaying}
       />
-      <input
-        id="main-input"
-        type="text"
-        placeholder="Enter a Spotify URI"
-        value={state.trackInput}
-        oninput={(e) => { actions.setTrackInput(e.target.value); }}
-        onkeypress={submitTrack}
-      />
+      <Input onSubmit={submitTrack} />
       <Queue queue={state.queue} />
     </main>
   ) : <div>Loading...</div>;
