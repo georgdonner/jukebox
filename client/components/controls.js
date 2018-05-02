@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import { h } from 'hyperapp';
+import IconButton from './iconButton';
 import '../scss/controls.scss';
 
 export default ({
@@ -7,9 +8,9 @@ export default ({
 }) => (
   <div id="controls">
     <div class="wrapper">
-      <i class={`main-control fas fa-${playing ? 'pause' : 'play'}-circle`} onclick={toggle} />
+      <IconButton classes={`main-control fas fa-${playing ? 'pause' : 'play'}-circle`} onClick={toggle} />
       {queue.length > 0 ? (
-        <i id="next" class="fas fa-step-forward" onclick={next} />
+        <IconButton id="next" classes="fas fa-step-forward" onClick={next} />
       ) : null}
     </div>
   </div>

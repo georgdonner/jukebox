@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import { h } from 'hyperapp';
 import { Sortable } from '@shopify/draggable';
+import IconButton from './iconButton';
 import convertMs from '../utils/convertMs';
 import '../scss/queue.scss';
 
@@ -11,9 +12,9 @@ const Item = ({ track, onRemove }) => (
     <td>{track.album.name}</td>
     <td>{convertMs(track.duration_ms)}</td>
     <td>
-      <i
-        class="remove fas fa-trash"
-        onclick={() => onRemove(track.id)}
+      <IconButton
+        classes="remove fas fa-trash"
+        onClick={() => onRemove(track.id)}
       />
     </td>
   </tr>
