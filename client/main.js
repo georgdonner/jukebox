@@ -11,7 +11,7 @@ import './scss/main.scss';
 const socket = io.connect();
 socket.on('queue update', (state) => {
   // hard reset to trigger a full re-render
-  main.updateState({ queue: null, users: null });
+  main.updateState({ queue: null, users: null, searchResults: null });
   setTimeout(() => {
     main.updateState(state);
   }, 0);
@@ -19,12 +19,16 @@ socket.on('queue update', (state) => {
 socket.on('playing', (isPlaying) => {
   main.current.setPlaying(isPlaying);
 });
+socket.on('search results', (results) => {
+  main.updateSearchResults(results);
+});
 
 const state = {
   username: null,
   usernameSubmitted: false,
   trackInput: '',
   allTracks: true,
+  timeout: null,
 };
 
 const actions = {
@@ -32,10 +36,12 @@ const actions = {
   setUsername: username => () => ({ username }),
   submitUsername: () => () => ({ usernameSubmitted: true }),
   setTrackInput: input => () => ({ trackInput: input }),
+  setTimeout: timeout => () => ({ timeout }),
   current: {
     setPlaying: isPlaying => () => ({ isPlaying }),
   },
   toggleQueue: () => state => ({ allTracks: !state.allTracks }),
+  updateSearchResults: searchResults => () => ({ searchResults }),
 };
 
 const view = (state, actions) => {
@@ -56,7 +62,10 @@ const view = (state, actions) => {
       />
     </div>
   );
-  const submitTrack = () => socket.emit('new track', { uri: state.trackInput });
+  const submitTrack = (uri) => {
+    actions.setTrackInput('');
+    socket.emit('new track', uri || state.trackInput);
+  };
   const playPause = () => {
     if (!state.current.isPlaying) socket.emit('play');
     else socket.emit('pause');
@@ -64,6 +73,9 @@ const view = (state, actions) => {
   const nextTrack = () => socket.emit('next');
   const reorderQueue = (oldIndex, newIndex) => socket.emit('reorder queue', oldIndex, newIndex);
   const removeTrack = trackId => socket.emit('remove track', trackId);
+  const search = (input) => {
+    socket.emit('search', input);
+  };
 
   const current = state.current && state.current.track ? (
     <Current track={state.current.track} />
@@ -77,7 +89,10 @@ const view = (state, actions) => {
         queue={state.queue}
         playing={state.current.isPlaying}
       />
-      <Input onSubmit={submitTrack} />
+      <Input
+        onSubmit={submitTrack}
+        onSearch={search}
+      />
       {state.allTracks ?
         <Queue /> :
         <SortableQueue

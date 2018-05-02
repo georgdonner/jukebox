@@ -7,15 +7,19 @@
 
 #main-input {
   flex: 1;
-  color: #222;
+  color: #444;
   margin: 0;
   font-size: 1.25rem;
   line-height: 1.5;
-  padding: .5rem;
+  padding: .75rem;
   border: 2px solid #e9e9e9;
   border-right: none;
   border-radius: 10px 0 0 10px;
   box-sizing: border-box;
+
+  &.not-rounded {
+    border-bottom-left-radius: 0;
+  }
 
   @media screen and (max-width: 1200px) {
     font-size: 1rem;
@@ -34,6 +38,10 @@
   transition: background-color ease .25s;
   cursor: pointer;
 
+  &.not-rounded {
+    border-bottom-right-radius: 0;
+  }
+
   &:hover {
     background-color: #fff;
   }
@@ -41,5 +49,33 @@
   @media screen and (max-width: 1200px) {
     font-size: .9rem;
     padding: 0 .5rem;
+  }
+}
+
+#search-results {
+  font-size: 1.25rem;
+  margin-top: -1.5rem;
+  margin-bottom: 1.5rem;
+  border: 2px solid #e9e9e9;
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  color: #444;
+
+  div {
+    padding: .75rem;
+    transition: background-color .25s ease;
+    cursor: pointer;
+
+    &:not(:last-child) {
+      border-bottom: 2px solid #e9e9e9;
+    }
+
+    &:hover {
+      background-color: #e9e9e9; 
+    }
+  }
+
+  @media screen and (max-width: 1200px) {
+    font-size: 1rem;
   }
 }

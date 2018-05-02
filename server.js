@@ -61,8 +61,8 @@ io.on('connection', (socket) => {
     socket.emit('queue update', db.getState());
   });
 
-  socket.on('new track', async (track) => {
-    const info = await spotify.getTrackInfo(track.uri);
+  socket.on('new track', async (uri) => {
+    const info = await spotify.getTrackInfo(uri);
     db.addTrack(socket.id, info);
     io.emit('queue update', db.getState());
   });
@@ -95,6 +95,11 @@ io.on('connection', (socket) => {
       spotify.play(next.uri);
       io.emit('queue update', db.getState());
     }
+  });
+
+  socket.on('search', async (input) => {
+    const results = await spotify.search(input);
+    socket.emit('search results', results);
   });
 
   socket.on('reorder queue', (oldIndex, newIndex) => {

@@ -35,6 +35,19 @@ class Spotify {
     });
   }
 
+  async search(input) {
+    const res = await request.get('https://api.spotify.com/v1/search', {
+      auth: { bearer: this.accessToken },
+      qs: {
+        q: input,
+        type: 'track',
+        limit: 5,
+      },
+      json: true,
+    });
+    return res.tracks.items;
+  }
+
   async updateToken() {
     const data = await request.post('https://accounts.spotify.com/api/token', {
       form: {
