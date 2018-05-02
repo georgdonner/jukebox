@@ -6,11 +6,16 @@ import Current from './components/current';
 import Controls from './components/controls';
 import Input from './components/input';
 import Queue from './components/queue';
+import SortableQueue from './components/sortableQueue';
 import './scss/main.scss';
 
 const socket = io.connect();
 socket.on('queue update', (state) => {
-  main.updateState(state);
+  // hard reset to trigger a full re-render
+  main.updateState({ queue: null, users: null });
+  setTimeout(() => {
+    main.updateState(state);
+  }, 0);
 });
 socket.on('playing', (isPlaying) => {
   main.current.setPlaying(isPlaying);
@@ -57,9 +62,9 @@ const view = (state, actions) => {
     if (!state.current.isPlaying) socket.emit('play');
     else socket.emit('pause');
   };
-  const nextTrack = () => {
-    socket.emit('next');
-  };
+  const nextTrack = () => socket.emit('next');
+  const reorderQueue = (oldIndex, newIndex) => socket.emit('reorder queue', oldIndex, newIndex);
+
   const current = state.current && state.current.track ? (
     <Current track={state.current.track} />
   ) : null;
@@ -73,9 +78,15 @@ const view = (state, actions) => {
         playing={state.current.isPlaying}
       />
       <Input onSubmit={submitTrack} />
-      <Queue queue={state.queue} />
+      {state.allTracks ?
+        <Queue /> :
+        <SortableQueue
+          user={state.users.find(user => user.id === socket.id)}
+          onReorder={reorderQueue}
+        />}
     </main>
   ) : <div>Loading...</div>;
+
   return state.usernameSubmitted ? mainView : input;
 };
 

@@ -97,7 +97,13 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on('reorder queue', (oldIndex, newIndex) => {
+    db.updateQueue(socket.id, oldIndex, newIndex);
+    io.emit('queue update', db.getState());
+  });
+
   socket.on('disconnect', () => {
     db.removeUser(socket.id);
+    io.emit('queue update', db.getState());
   });
 });

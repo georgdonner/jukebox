@@ -1,13 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import { h } from 'hyperapp';
+import convertMs from '../utils/convertMs';
 import '../scss/queue.scss';
-
-const convertMs = (ms) => {
-  const rounded = 1000 * Math.round(ms / 1000);
-  const d = new Date(rounded);
-  const s = d.getUTCSeconds();
-  return `${d.getUTCMinutes()}:${s >= 10 ? '' : '0'}${s}`;
-};
 
 const Item = ({ track, user }) => (
   <tr key={track.id}>
@@ -19,17 +13,22 @@ const Item = ({ track, user }) => (
   </tr>
 );
 
-export default ({ queue }) => (
-  <div id="queue">
-    <table>
-      <tr>
-        <th>Name</th>
-        <th>Artists</th>
-        <th>Album</th>
-        <th>Duration</th>
-        <th>Added by</th>
-      </tr>
-      {queue.map(item => <Item track={item.track} user={item.user} />)}
-    </table>
-  </div>
-);
+export default () => (state) => {
+  const tracks = state.queue.map(item => (
+    <Item track={item.track} user={item.user} />
+  ));
+  return (
+    <div class="queue">
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Artists</th>
+          <th>Album</th>
+          <th>Duration</th>
+          <th>Added by</th>
+        </tr>
+        {tracks}
+      </table>
+    </div>
+  );
+};

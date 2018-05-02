@@ -27,6 +27,19 @@ class QueueDb {
       .write();
   }
 
+  updateQueue(userId, oldIndex, newIndex) {
+    const queue = this.db.get('users')
+      .find({ id: userId })
+      .get('queue')
+      .value();
+    const removed = queue.splice(oldIndex, 1);
+    queue.splice(newIndex, 0, removed[0]);
+    this.db.get('users')
+      .find({ id: userId })
+      .assign({ queue })
+      .write();
+  }
+
   nextTrack() {
     const state = this.db.getState();
     const queue = QueueDb.mergeQueues(state);
