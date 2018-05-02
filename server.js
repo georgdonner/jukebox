@@ -32,7 +32,7 @@ app.get('/', (req, res) => {
 
 setInterval(async () => {
   const auth = db.getCredentials();
-  if (auth.expires < Date.now() - 10000) {
+  if (auth.expires - 10000 < Date.now()) {
     const credentials = await spotify.updateToken();
     db.setCredentials(credentials);
   }
