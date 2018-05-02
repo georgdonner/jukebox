@@ -15,6 +15,7 @@ export default ({ onSearch, onSubmit }) => (state, actions) => {
       {state.searchResults.map(track => (
         <SearchResult track={track} onClick={onSubmit} />
       ))}
+      {state.searchResults.length === 0 ? <div>No results.</div> : null}
     </div>
   ) : null;
   const classes = state.searchResults ? 'not-rounded' : '';

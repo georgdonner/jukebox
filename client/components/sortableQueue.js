@@ -50,7 +50,7 @@ export default ({ user, onReorder, onRemove }) => () => {
     <Item track={track} onRemove={onRemove} mobile={mobile} />
   ));
 
-  return (
+  return user.queue.length > 0 ? (
     <div class="queue">
       <div
         oncreate={() => {
@@ -69,5 +69,7 @@ export default ({ user, onReorder, onRemove }) => () => {
         </table>
       </div>
     </div>
+  ) : (
+    <div class="no-track">No track queued.</div>
   );
 };
