@@ -7,6 +7,10 @@
 
   img {
     max-width: 225px;
+
+    @media screen and (max-width: 1200px) {
+      max-width: 175px;
+    }
   }
 
   div {

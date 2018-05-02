@@ -11,13 +11,7 @@ import './scss/main.scss';
 const socket = io.connect();
 socket.on('queue update', (newState) => {
   main.updateSearchResults(null);
-  if (!state.allTracks) {
-    // hard reset to trigger a full re-render
-    main.updateState({ queue: null, users: null });
-  }
-  setTimeout(() => {
-    main.updateState(newState);
-  }, 0);
+  main.queueStateUpdate(newState);
 });
 socket.on('playing', (isPlaying) => {
   main.current.setPlaying(isPlaying);
@@ -35,6 +29,13 @@ const state = {
 };
 
 const actions = {
+  queueStateUpdate: newState => (state, actions) => {
+    // hard reset to trigger a re-render of the queue (my tracks only, solves DnD issues)
+    if (!state.allTracks) actions.updateState({ queue: null, users: null });
+    setTimeout(() => {
+      actions.updateState(newState);
+    }, 0);
+  },
   updateState: upd => () => (upd),
   setUsername: username => () => ({ username }),
   submitUsername: () => () => ({ usernameSubmitted: true }),
