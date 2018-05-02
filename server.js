@@ -102,6 +102,11 @@ io.on('connection', (socket) => {
     io.emit('queue update', db.getState());
   });
 
+  socket.on('remove track', (trackId) => {
+    db.removeTrack(socket.id, trackId);
+    io.emit('queue update', db.getState());
+  });
+
   socket.on('disconnect', () => {
     db.removeUser(socket.id);
     io.emit('queue update', db.getState());

@@ -64,6 +64,7 @@ const view = (state, actions) => {
   };
   const nextTrack = () => socket.emit('next');
   const reorderQueue = (oldIndex, newIndex) => socket.emit('reorder queue', oldIndex, newIndex);
+  const removeTrack = trackId => socket.emit('remove track', trackId);
 
   const current = state.current && state.current.track ? (
     <Current track={state.current.track} />
@@ -83,6 +84,7 @@ const view = (state, actions) => {
         <SortableQueue
           user={state.users.find(user => user.id === socket.id)}
           onReorder={reorderQueue}
+          onRemove={removeTrack}
         />}
     </main>
   ) : <div>Loading...</div>;

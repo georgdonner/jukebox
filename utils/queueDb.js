@@ -27,6 +27,14 @@ class QueueDb {
       .write();
   }
 
+  removeTrack(userId, trackId) {
+    this.db.get('users')
+      .find({ id: userId })
+      .get('queue')
+      .remove({ id: trackId })
+      .write();
+  }
+
   updateQueue(userId, oldIndex, newIndex) {
     const queue = this.db.get('users')
       .find({ id: userId })

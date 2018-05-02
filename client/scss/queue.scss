@@ -22,3 +22,13 @@ table {
     color: #222;
   }
 }
+
+.remove {
+  color: #444;
+  transition: color .25s ease;
+  cursor: pointer;
+
+  &:hover {
+    color: #222;
+  }
+}

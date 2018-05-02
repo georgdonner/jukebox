@@ -4,20 +4,23 @@ import { Sortable } from '@shopify/draggable';
 import convertMs from '../utils/convertMs';
 import '../scss/queue.scss';
 
-const Item = ({ track, user }) => (
+const Item = ({ track, onRemove }) => (
   <tr key={track.id} class="item" data-id={track.id}>
     <td>{track.name}</td>
     <td>{track.artists.map(a => a.name).join(', ')}</td>
     <td>{track.album.name}</td>
     <td>{convertMs(track.duration_ms)}</td>
-    <td>{user}</td>
+    <td>
+      <i
+        class="remove fas fa-trash"
+        onclick={() => onRemove(track.id)}
+      />
+    </td>
   </tr>
 );
 
-export default ({ user, onReorder }) => () => {
-  const tracks = user.queue.map(track => (
-    <Item track={track} user={user.username} sortable />
-  ));
+export default ({ user, onReorder, onRemove }) => () => {
+  const tracks = user.queue.map(track => <Item track={track} onRemove={onRemove} />);
 
   return (
     <div class="queue">
@@ -38,7 +41,7 @@ export default ({ user, onReorder }) => () => {
             <th>Artists</th>
             <th>Album</th>
             <th>Duration</th>
-            <th>Added by</th>
+            <th />
           </tr>
           {tracks}
         </table>
