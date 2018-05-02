@@ -1,5 +1,6 @@
 #main-input-container {
-  width: 1200px;
+  width: 100%;
+  max-width: 1200px;
   display: flex;
   margin: 1.5rem auto;
 }
@@ -15,6 +16,10 @@
   border-right: none;
   border-radius: 10px 0 0 10px;
   box-sizing: border-box;
+
+  @media screen and (max-width: 1200px) {
+    font-size: 1rem;
+  }
 }
 
 #toggle-queue {
@@ -31,5 +36,10 @@
 
   &:hover {
     background-color: #fff;
+  }
+
+  @media screen and (max-width: 1200px) {
+    font-size: .9rem;
+    padding: 0 .5rem;
   }
 }

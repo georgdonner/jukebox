@@ -16,6 +16,7 @@
     "import"
   ],
   "rules": {
+    "no-confusing-arrow": 0,
     "no-unused-vars": [2, { "varsIgnorePattern": "h" }],
     "linebreak-style": 0,
     "function-paren-newline": 0,

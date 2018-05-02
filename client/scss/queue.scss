@@ -23,6 +23,26 @@ table {
   }
 }
 
+.track-mobile td {
+  padding: 1.25rem 0;
+}
+
+.track-name-mobile {
+  color: #222;
+  margin-bottom: .5rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.track-info-mobile {
+  font-size: .9rem;
+  color: #777;
+}
+
+.delimiter-mobile {
+  padding: 0 0.5rem;
+}
+
 .remove {
   color: #444;
   transition: color .25s ease;
