@@ -6,6 +6,7 @@
 html, body {
   margin: 0;
   height: 100%;
+  position: relative;
 }
 
 #username-container {
@@ -31,7 +32,6 @@ html, body {
 }
 
 main {
-  position: relative;
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
