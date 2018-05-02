@@ -61,7 +61,7 @@ const view = (state, actions) => {
         toggle={playPause}
         next={nextTrack}
         queue={state.queue}
-        playing={state.current.isPlaying}
+        current={state.current}
       />
       <Input
         onSubmit={submitTrack}
