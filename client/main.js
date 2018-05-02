@@ -1,6 +1,5 @@
 /* eslint-disable no-shadow, no-use-before-define */
 import io from 'socket.io-client';
-// eslint-disable-next-line no-unused-vars
 import { h, app } from 'hyperapp';
 import Current from './components/current';
 import Controls from './components/controls';

@@ -10,7 +10,8 @@
     "client": "parcel watch client/index.html -d build --public-url ./ --no-hmr",
     "build": "parcel build client/index.html -d build --public-url ./",
     "setup": "node setup/auth",
-    "watch": "nodemon server --ignore db.json"
+    "watch": "nodemon server --ignore db.json",
+    "lint": "eslint --ignore-path .gitignore ."
   },
   "devDependencies": {
     "babel-core": "^6.26.3",

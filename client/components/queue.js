@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import { h } from 'hyperapp';
 import convertMs from '../utils/convertMs';
 import '../scss/queue.scss';

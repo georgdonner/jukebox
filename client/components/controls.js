@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import { h } from 'hyperapp';
 import IconButton from './iconButton';
 import '../scss/controls.scss';

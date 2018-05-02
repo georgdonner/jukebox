@@ -1,6 +1,12 @@
-node_modules
+# Generated files
 db.json
-.env
+node_modules
 build
 .cache
+*.log
+
+# Private
+.env
+
+# Not needed
 package-lock.json
