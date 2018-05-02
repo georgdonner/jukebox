@@ -12,8 +12,7 @@ export default ({ track, onClick }) => (
       }
     }}
   >
-    <span>{track.name}</span>
-    <span class="delimiter-mobile">•</span>
-    <span>{track.artists.map(a => a.name).join(', ')}</span>
+    <span class="track-name-search">{track.name}</span>
+    <span class="track-artists-search">{track.artists.map(a => a.name).join(', ')}</span>
   </div>
 );
