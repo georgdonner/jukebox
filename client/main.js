@@ -1,6 +1,9 @@
 /* eslint-disable no-shadow, no-use-before-define */
 import io from 'socket.io-client';
 import { h, app } from 'hyperapp';
+import actions from './store/actions';
+import state from './store/state';
+import Username from './components/username';
 import Current from './components/current';
 import Controls from './components/controls';
 import Input from './components/input';
@@ -20,52 +23,11 @@ socket.on('search results', (results) => {
   main.updateSearchResults(results);
 });
 
-const state = {
-  username: null,
-  usernameSubmitted: false,
-  trackInput: '',
-  allTracks: true,
-  timeout: null,
-};
-
-const actions = {
-  queueStateUpdate: newState => (state, actions) => {
-    // hard reset to trigger a re-render of the queue (my tracks only, solves DnD issues)
-    if (!state.allTracks) actions.updateState({ queue: null, users: null });
-    setTimeout(() => {
-      actions.updateState(newState);
-    }, 0);
-  },
-  updateState: upd => () => (upd),
-  setUsername: username => () => ({ username }),
-  submitUsername: () => () => ({ usernameSubmitted: true }),
-  setTrackInput: input => () => ({ trackInput: input }),
-  setTimeout: timeout => () => ({ timeout }),
-  current: {
-    setPlaying: isPlaying => () => ({ isPlaying }),
-  },
-  toggleQueue: () => state => ({ allTracks: !state.allTracks }),
-  updateSearchResults: searchResults => () => ({ searchResults }),
-};
-
 const view = (state, actions) => {
-  const changeUsername = (e) => {
-    if (e.keyCode === 13) { // ENTER
-      actions.submitUsername();
-      socket.emit('username', { username: state.username });
-    }
+  const setUsername = (username) => {
+    actions.submitUsername();
+    socket.emit('username', username);
   };
-  const input = (
-    <div id="username-container">
-      <input
-        type="text"
-        placeholder="Enter your username"
-        value={state.username}
-        oninput={(e) => { actions.setUsername(e.target.value); }}
-        onkeypress={changeUsername}
-      />
-    </div>
-  );
   const submitTrack = (uri) => {
     actions.setTrackInput('');
     socket.emit('new track', uri || state.trackInput);
@@ -107,7 +69,7 @@ const view = (state, actions) => {
     </main>
   ) : <div>Loading...</div>;
 
-  return state.usernameSubmitted ? mainView : input;
+  return state.usernameSubmitted ? mainView : <Username onSubmit={setUsername} />;
 };
 
 const main = app(state, actions, view, document.body);
