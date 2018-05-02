@@ -4,4 +4,5 @@ export default {
   trackInput: '',
   allTracks: true,
   timeout: null,
+  error: null,
 };

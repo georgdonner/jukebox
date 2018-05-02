@@ -56,8 +56,8 @@ setInterval(async () => {
 }, 5000);
 
 io.on('connection', (socket) => {
-  socket.on('username', (data) => {
-    db.addUser(socket.id, data.username);
+  socket.on('username', (username) => {
+    db.addUser(socket.id, username);
     socket.emit('queue update', db.getState());
   });
 

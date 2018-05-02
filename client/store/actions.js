@@ -16,4 +16,5 @@ export default {
   },
   toggleQueue: () => state => ({ allTracks: !state.allTracks }),
   updateSearchResults: searchResults => () => ({ searchResults }),
+  setError: error => () => ({ error }),
 };

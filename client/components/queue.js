@@ -37,6 +37,7 @@ export default () => (state) => {
       <th>Added by</th>
     </tr>
   ) : null;
+  console.log(state.queue);
   const tracks = state.queue.map(item => (
     <Item track={item.track} user={item.user} mobile={mobile} />
   ));

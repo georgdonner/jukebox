@@ -4,6 +4,7 @@ import { h, app } from 'hyperapp';
 import actions from './store/actions';
 import state from './store/state';
 import Username from './components/username';
+import Error from './components/error';
 import Current from './components/current';
 import Controls from './components/controls';
 import Input from './components/input';
@@ -29,8 +30,14 @@ const view = (state, actions) => {
     socket.emit('username', username);
   };
   const submitTrack = (uri) => {
+    const trackUri = uri || state.trackInput;
     actions.setTrackInput('');
-    socket.emit('new track', uri || state.trackInput);
+    if (state.queue.find(item => item.track.uri === trackUri)) {
+      actions.setError('This song is already in queue.');
+      actions.updateSearchResults(null);
+    } else {
+      socket.emit('new track', trackUri);
+    }
   };
   const playPause = () => {
     if (!state.current.isPlaying) socket.emit('play');
@@ -48,6 +55,7 @@ const view = (state, actions) => {
   ) : null;
   const mainView = state.current && state.queue ? (
     <main>
+      <Error />
       {current}
       <Controls
         toggle={playPause}
