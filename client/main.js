@@ -9,11 +9,14 @@ import SortableQueue from './components/sortableQueue';
 import './scss/main.scss';
 
 const socket = io.connect();
-socket.on('queue update', (state) => {
-  // hard reset to trigger a full re-render
-  main.updateState({ queue: null, users: null, searchResults: null });
+socket.on('queue update', (newState) => {
+  main.updateSearchResults(null);
+  if (!state.allTracks) {
+    // hard reset to trigger a full re-render
+    main.updateState({ queue: null, users: null });
+  }
   setTimeout(() => {
-    main.updateState(state);
+    main.updateState(newState);
   }, 0);
 });
 socket.on('playing', (isPlaying) => {
