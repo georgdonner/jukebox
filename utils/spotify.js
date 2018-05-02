@@ -61,7 +61,7 @@ class Spotify {
     this.accessToken = data.access_token;
     return {
       accessToken: data.access_token,
-      expires: data.expires_in + Date.now(),
+      expires: (data.expires_in * 1000) + Date.now(),
     };
   }
 }
