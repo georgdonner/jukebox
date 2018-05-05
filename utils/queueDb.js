@@ -3,7 +3,7 @@ class QueueDb {
     this.db = db;
     this.db.unset('current').write();
     this.db.unset('users').write();
-    this.db.defaults({ users: [], current: { isPlaying: false } })
+    this.db.defaults({ users: [], current: { isPlaying: false }, credentials: {} })
       .write();
   }
 
