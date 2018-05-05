@@ -1,9 +1,8 @@
+require('dotenv').config();
 const fs = require('fs');
 const express = require('express');
-const low = require('lowdb');
-const FileSync = require('lowdb/adapters/FileSync');
 const request = require('request-promise-native');
-require('dotenv').config();
+const saveCredentials = require('./saveCredentials');
 
 const scopes = [
   'user-read-currently-playing',
@@ -24,20 +23,6 @@ app.get('/login', (req, res) => {
     '&redirect_uri=' + encodeURIComponent(redirect);
   res.redirect(url);
 });
-
-const saveCredentials = (data) => {
-  const adapter = new FileSync('db.json');
-  const db = low(adapter);
-  db.defaults({ users: [], current: {}, credentials: {} })
-    .write();
-  const credentials = {
-    accessToken: data.access_token,
-    expires: Date.now() + data.expires_in,
-  };
-  db.get('credentials')
-    .assign(credentials)
-    .write();
-};
 
 app.get('/token', async (req) => {
   const { code } = req.query;

@@ -7,11 +7,14 @@
   "author": "Georg Donner",
   "license": "MIT",
   "scripts": {
+    "start": "node server",
     "client": "parcel watch client/index.html -d build --public-url ./ --no-hmr",
     "build": "parcel build client/index.html -d build --public-url ./",
     "setup": "node setup/auth",
+    "refresh": "node setup/refresh",
     "watch": "nodemon server --ignore db.json",
-    "lint": "eslint --ignore-path .gitignore ."
+    "lint": "eslint --ignore-path .gitignore .",
+    "heroku-postbuild": "yarn build"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
