@@ -2,7 +2,8 @@ const request = require('request-promise-native');
 
 class Spotify {
   constructor(accessToken) {
-    this.accessToken = accessToken;
+    if (!accessToken) this.updateToken();
+    else this.accessToken = accessToken;
   }
 
   getTrackInfo(uri) {

@@ -13,7 +13,8 @@ const adapter = new FileSync('db.json');
 const lowdb = low(adapter);
 const db = new QueueDb(lowdb);
 
-const { accessToken } = db.getCredentials();
+const cred = db.getCredentials();
+const accessToken = cred && cred.accessToken ? cred.accessToken : null;
 const spotify = new Spotify(accessToken);
 
 const app = express();
