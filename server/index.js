@@ -42,6 +42,14 @@ const init = async () => {
   });
 
   setInterval(() => checkPlayback(io, db, spotify), 5000);
+
+  // keep Heroku server awake
+  if (process.env.DYNO) {
+    app.get('/wake', (req, res) => res.sendStatus(200));
+    setInterval(() => {
+      if (db.getSession().active) http.get(`http://localhost:${port}/wake`);
+    }, 10 * 60 * 1000);
+  }
 };
 
 init();
