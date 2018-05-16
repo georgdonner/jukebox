@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 import { h, app } from 'hyperapp';
 import actions from './store/actions';
 import state from './store/state';
-import Username from './components/username';
+import SingleInput from './components/singleInput';
 import Error from './components/error';
 import Current from './components/current';
 import Controls from './components/controls';
@@ -13,6 +13,8 @@ import SortableQueue from './components/sortableQueue';
 import './scss/main.scss';
 
 const socket = io.connect();
+socket.on('session status', status => main.setSessionStatus(status));
+socket.on('username changed', username => main.confirmUsername(username));
 socket.on('queue update', (newState) => {
   main.updateSearchResults(null);
   main.queueStateUpdate(newState);
@@ -23,12 +25,12 @@ socket.on('playing', (isPlaying) => {
 socket.on('search results', (results) => {
   main.updateSearchResults(results);
 });
-socket.on('username changed', () => main.confirmUsername());
 socket.on('server error', (error) => {
   main.setError(error);
 });
 
 const view = (state, actions) => {
+  const sessionLogin = password => socket.emit('session login', password);
   const setUsername = username => socket.emit('username', username);
   const submitTrack = (uri) => {
     const trackUri = uri || state.trackInput;
@@ -51,32 +53,49 @@ const view = (state, actions) => {
     socket.emit('search', input);
   };
 
-  const current = state.current && state.current.track ? (
-    <Current track={state.current.track} />
-  ) : null;
-  const mainView = state.current && state.queue ? (
-    <main>
-      {current}
-      <Controls
-        toggle={playPause}
-        next={nextTrack}
-        queue={state.queue}
-        current={state.current}
-      />
-      <Input
-        onSubmit={submitTrack}
-        onSearch={search}
-      />
-      {state.allTracks ?
-        <Queue /> :
-        <SortableQueue
-          user={state.users.find(user => user.name === state.username)}
-          onReorder={reorderQueue}
-          onRemove={removeTrack}
-        />}
-    </main>
-  ) : <div>Loading...</div>;
-  const content = state.usernameConfirmed ? mainView : <Username onSubmit={setUsername} />;
+  let content;
+  if (!state.sessionActive) {
+    content = (<SingleInput
+      placeholder="Enter password to start a session"
+      type="password"
+      onChange={actions.setSessionPassword}
+      onSubmit={sessionLogin}
+      value={state.sessionPassword}
+    />);
+  } else if (!state.usernameConfirmed) {
+    content = (<SingleInput
+      placeholder="Enter your username"
+      onChange={actions.setUsername}
+      onSubmit={setUsername}
+      value={state.username}
+    />);
+  } else {
+    const current = state.current && state.current.track ? (
+      <Current track={state.current.track} />
+    ) : null;
+    content = state.current && state.queue ? (
+      <main>
+        {current}
+        <Controls
+          toggle={playPause}
+          next={nextTrack}
+          queue={state.queue}
+          current={state.current}
+        />
+        <Input
+          onSubmit={submitTrack}
+          onSearch={search}
+        />
+        {state.allTracks ?
+          <Queue /> :
+          <SortableQueue
+            user={state.users.find(user => user.name === state.username)}
+            onReorder={reorderQueue}
+            onRemove={removeTrack}
+          />}
+      </main>
+    ) : <div>Loading...</div>;
+  }
 
   return (
     <div id="outer-wrapper">

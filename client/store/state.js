@@ -1,4 +1,6 @@
 export default {
+  sessionActive: false,
+  sessionPassword: '',
   username: null,
   usernameConfirmed: false,
   trackInput: '',

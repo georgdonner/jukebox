@@ -5,6 +5,7 @@ class QueueDb {
     this.db = db;
     this.db.unset('current').write();
     this.db.unset('users').write();
+    this.db.unset('session').write();
     this.db.defaults(dbDefaults)
       .write();
   }
@@ -38,6 +39,14 @@ class QueueDb {
       .get('queue')
       .remove({ id: trackId })
       .write();
+  }
+
+  getSession() {
+    return this.db.get('session').value();
+  }
+
+  activateSession() {
+    this.db.get('session').assign({ active: true }).write();
   }
 
   updateQueue(username, oldIndex, newIndex) {

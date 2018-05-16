@@ -1,4 +1,6 @@
 export default {
+  setSessionStatus: status => () => ({ sessionActive: status }),
+  setSessionPassword: sessionPassword => () => ({ sessionPassword }),
   queueStateUpdate: newState => (state, actions) => {
     // hard reset to trigger a re-render of the queue (my tracks only, solves DnD issues)
     if (!state.allTracks) actions.updateState({ queue: null, users: null });
@@ -8,7 +10,7 @@ export default {
   },
   updateState: upd => () => (upd),
   setUsername: username => () => ({ username }),
-  confirmUsername: () => () => ({ usernameConfirmed: true }),
+  confirmUsername: username => () => ({ username, usernameConfirmed: true }),
   setTrackInput: input => () => ({ trackInput: input }),
   setTimeout: timeout => () => ({ timeout }),
   current: {

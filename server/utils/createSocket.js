@@ -1,6 +1,8 @@
 module.exports = (io, db, spotify) => {
   io.on('connection', (socket) => {
-    socket.on('username', (username) => {
+    socket.emit('session status', db.getSession().active);
+
+    const handleUsername = (username) => {
       try {
         db.addUser(username);
         socket.emit('username changed', username);
@@ -8,7 +10,19 @@ module.exports = (io, db, spotify) => {
       } catch (error) {
         socket.emit('server error', error.message);
       }
+    };
+
+    socket.on('session login', (password) => {
+      if (password === process.env.SESSION_PASSWORD) {
+        db.activateSession();
+        io.emit('session status', true);
+        handleUsername('admin');
+      } else {
+        socket.emit('server error', 'Invalid password');
+      }
     });
+
+    socket.on('username', username => handleUsername(username));
 
     socket.on('new track', async ({ username, uri }) => {
       const info = await spotify.getTrackInfo(uri);
