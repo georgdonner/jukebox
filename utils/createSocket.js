@@ -1,8 +1,13 @@
 module.exports = (io, db, spotify) => {
   io.on('connection', (socket) => {
     socket.on('username', (username) => {
-      db.addUser(username);
-      socket.emit('queue update', db.getState());
+      try {
+        db.addUser(username);
+        socket.emit('username changed', username);
+        socket.emit('queue update', db.getState());
+      } catch (error) {
+        socket.emit('server error', error.message);
+      }
     });
 
     socket.on('new track', async ({ username, uri }) => {

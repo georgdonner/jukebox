@@ -23,12 +23,13 @@ socket.on('playing', (isPlaying) => {
 socket.on('search results', (results) => {
   main.updateSearchResults(results);
 });
+socket.on('username changed', () => main.confirmUsername());
+socket.on('server error', (error) => {
+  main.setError(error);
+});
 
 const view = (state, actions) => {
-  const setUsername = (username) => {
-    actions.submitUsername();
-    socket.emit('username', username);
-  };
+  const setUsername = username => socket.emit('username', username);
   const submitTrack = (uri) => {
     const trackUri = uri || state.trackInput;
     actions.setTrackInput('');
@@ -55,7 +56,6 @@ const view = (state, actions) => {
   ) : null;
   const mainView = state.current && state.queue ? (
     <main>
-      <Error />
       {current}
       <Controls
         toggle={playPause}
@@ -76,8 +76,14 @@ const view = (state, actions) => {
         />}
     </main>
   ) : <div>Loading...</div>;
+  const content = state.usernameConfirmed ? mainView : <Username onSubmit={setUsername} />;
 
-  return state.usernameSubmitted ? mainView : <Username onSubmit={setUsername} />;
+  return (
+    <div id="outer-wrapper">
+      <Error />
+      {content}
+    </div>
+  );
 };
 
 const main = app(state, actions, view, document.body);

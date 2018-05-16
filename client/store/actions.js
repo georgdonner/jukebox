@@ -8,7 +8,7 @@ export default {
   },
   updateState: upd => () => (upd),
   setUsername: username => () => ({ username }),
-  submitUsername: () => () => ({ usernameSubmitted: true }),
+  confirmUsername: () => () => ({ usernameConfirmed: true }),
   setTrackInput: input => () => ({ trackInput: input }),
   setTimeout: timeout => () => ({ timeout }),
   current: {

@@ -1,6 +1,6 @@
 export default {
   username: null,
-  usernameSubmitted: false,
+  usernameConfirmed: false,
   trackInput: '',
   allTracks: true,
   timeout: null,

@@ -8,6 +8,9 @@ class QueueDb {
   }
 
   addUser(name) {
+    if (this.db.get('users').find({ name }).value()) {
+      throw new Error('A user with that username does already exist');
+    }
     this.db.get('users')
       .push({ name, queue: [] })
       .write();

@@ -9,6 +9,10 @@ html, body {
   position: relative;
 }
 
+#outer-wrapper {
+  height: inherit;
+}
+
 #username-container {
   height: 100%;
   display: flex;
