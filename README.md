@@ -24,6 +24,7 @@ yarn install
 ```
 CLIENT_ID=243875098324jf9pj9n84ru
 CLIENT_SECRET=jf9834h098fh9h4f8z43h9fs8h349
+SESSION_PASSWORD=mypassword
 ```
 - Authorize your Spotify account and start the server:
 ```
