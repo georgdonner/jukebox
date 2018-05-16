@@ -2,5 +2,5 @@ module.exports = {
   users: [],
   current: { isPlaying: false },
   credentials: {},
-  session: { active: false },
+  session: { active: false, lastUpdate: Date.now() },
 };

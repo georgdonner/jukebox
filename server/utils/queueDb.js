@@ -26,6 +26,7 @@ class QueueDb {
   }
 
   addTrack(username, track) {
+    this.db.get('session').assign({ lastUpdate: Date.now() }).write();
     this.db.get('users')
       .find({ name: username })
       .get('queue')
