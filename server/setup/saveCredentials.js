@@ -1,10 +1,11 @@
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
+const dbDefaults = require('../config/dbDefaults');
 
 module.exports = (data) => {
   const adapter = new FileSync('db.json');
   const db = low(adapter);
-  db.defaults({ users: [], current: {}, credentials: {} })
+  db.defaults(dbDefaults)
     .write();
   const credentials = {
     accessToken: data.access_token,
