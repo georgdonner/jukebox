@@ -74,6 +74,9 @@ module.exports = (io, db, spotify) => {
       db.removeTrack(username, trackId);
       io.emit('queue update', db.getState());
     });
+
+    // eslint-disable-next-line no-console
+    socket.on('error', error => console.error(error));
   });
   return io;
 };
