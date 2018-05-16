@@ -7,43 +7,43 @@ class QueueDb {
       .write();
   }
 
-  addUser(id, username) {
+  addUser(name) {
     this.db.get('users')
-      .push({ id, username, queue: [] })
+      .push({ name, queue: [] })
       .write();
   }
 
-  removeUser(id) {
+  removeUser(username) {
     this.db.get('users')
-      .remove({ id })
+      .remove({ name: username })
       .write();
   }
 
-  addTrack(userId, track) {
+  addTrack(username, track) {
     this.db.get('users')
-      .find({ id: userId })
+      .find({ name: username })
       .get('queue')
       .push(track)
       .write();
   }
 
-  removeTrack(userId, trackId) {
+  removeTrack(username, trackId) {
     this.db.get('users')
-      .find({ id: userId })
+      .find({ name: username })
       .get('queue')
       .remove({ id: trackId })
       .write();
   }
 
-  updateQueue(userId, oldIndex, newIndex) {
+  updateQueue(username, oldIndex, newIndex) {
     const queue = this.db.get('users')
-      .find({ id: userId })
+      .find({ name: username })
       .get('queue')
       .value();
     const removed = queue.splice(oldIndex, 1);
     queue.splice(newIndex, 0, removed[0]);
     this.db.get('users')
-      .find({ id: userId })
+      .find({ name: username })
       .assign({ queue })
       .write();
   }
@@ -52,14 +52,14 @@ class QueueDb {
     const state = this.db.getState();
     const queue = QueueDb.mergeQueues(state);
     if (queue.length === 0) return null;
-    const { userId, track } = queue[0];
+    const { user, track } = queue[0];
     this.db.get('users')
-      .find({ id: userId })
+      .find({ name: user })
       .get('queue')
       .shift()
       .write();
     this.db.get('current')
-      .assign({ user: userId, track })
+      .assign({ user, track })
       .write();
     return track;
   }
@@ -90,7 +90,7 @@ class QueueDb {
   static mergeQueues(state) {
     const { current, users } = state;
     const usersCopy = JSON.parse(JSON.stringify(users));
-    const currentUserIndex = users.findIndex(user => user.id === current.user) || 0;
+    const currentUserIndex = users.findIndex(user => user.name === current.user) || 0;
     const sortedUsers = currentUserIndex !== users.length - 1 ?
       usersCopy.slice(currentUserIndex + 1).concat(usersCopy.slice(0, currentUserIndex + 1)) :
       usersCopy;
@@ -102,7 +102,7 @@ class QueueDb {
       // eslint-disable-next-line no-loop-func
       sortedUsers.forEach((user) => {
         if (i < user.queue.length) {
-          queue.push({ track: user.queue[i], user: user.username, userId: user.id });
+          queue.push({ track: user.queue[i], user: user.name });
         }
       });
       i += 1;

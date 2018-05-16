@@ -36,7 +36,7 @@ const view = (state, actions) => {
       actions.setError('This song is already in queue.');
       actions.updateSearchResults(null);
     } else {
-      socket.emit('new track', trackUri);
+      socket.emit('new track', { username: state.username, uri: trackUri });
     }
   };
   const playPause = () => {
@@ -44,8 +44,8 @@ const view = (state, actions) => {
     else socket.emit('pause');
   };
   const nextTrack = () => socket.emit('next');
-  const reorderQueue = (oldIndex, newIndex) => socket.emit('reorder queue', oldIndex, newIndex);
-  const removeTrack = trackId => socket.emit('remove track', trackId);
+  const reorderQueue = (oldIndex, newIndex) => socket.emit('reorder queue', { username: state.username, oldIndex, newIndex });
+  const removeTrack = trackId => socket.emit('remove track', { username: state.username, trackId });
   const search = (input) => {
     socket.emit('search', input);
   };
@@ -70,7 +70,7 @@ const view = (state, actions) => {
       {state.allTracks ?
         <Queue /> :
         <SortableQueue
-          user={state.users.find(user => user.id === socket.id)}
+          user={state.users.find(user => user.name === state.username)}
           onReorder={reorderQueue}
           onRemove={removeTrack}
         />}

@@ -13,6 +13,7 @@
     "setup": "node setup/auth",
     "refresh": "node setup/refresh",
     "watch": "nodemon server --ignore db.json",
+    "debug": "nodemon server --ignore db.json --inspect",
     "lint": "eslint --ignore-path .gitignore .",
     "heroku-postbuild": "yarn build"
   },

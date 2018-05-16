@@ -10,3 +10,6 @@ build
 
 # Not needed
 package-lock.json
+
+# VS Code config
+.vscode

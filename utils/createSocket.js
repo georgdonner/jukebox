@@ -1,13 +1,13 @@
 module.exports = (io, db, spotify) => {
   io.on('connection', (socket) => {
     socket.on('username', (username) => {
-      db.addUser(socket.id, username);
+      db.addUser(username);
       socket.emit('queue update', db.getState());
     });
 
-    socket.on('new track', async (uri) => {
+    socket.on('new track', async ({ username, uri }) => {
       const info = await spotify.getTrackInfo(uri);
-      db.addTrack(socket.id, info);
+      db.addTrack(username, info);
       io.emit('queue update', db.getState());
     });
 
@@ -46,18 +46,13 @@ module.exports = (io, db, spotify) => {
       socket.emit('search results', results);
     });
 
-    socket.on('reorder queue', (oldIndex, newIndex) => {
-      db.updateQueue(socket.id, oldIndex, newIndex);
+    socket.on('reorder queue', ({ username, oldIndex, newIndex }) => {
+      db.updateQueue(username, oldIndex, newIndex);
       io.emit('queue update', db.getState());
     });
 
-    socket.on('remove track', (trackId) => {
-      db.removeTrack(socket.id, trackId);
-      io.emit('queue update', db.getState());
-    });
-
-    socket.on('disconnect', () => {
-      db.removeUser(socket.id);
+    socket.on('remove track', ({ username, trackId }) => {
+      db.removeTrack(username, trackId);
       io.emit('queue update', db.getState());
     });
   });

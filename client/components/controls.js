@@ -5,7 +5,6 @@ import '../scss/controls.scss';
 export default ({
   current, queue, toggle, next,
 }) => {
-  console.log(current);
   if (!current.track) {
     if (queue.length > 0) {
       return <button id="start-playback" onclick={next}>Start playback</button>;
