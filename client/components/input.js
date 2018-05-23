@@ -34,7 +34,7 @@ export default ({ onSearch, onSubmit }) => (state, actions) => {
             clearTimeout(state.timeout);
             const timeout = setTimeout(() => {
               if (input.length > 2 && !isSpotifyUri(input)) onSearch(input);
-            }, 1000);
+            }, 250);
             actions.setTimeout(timeout);
           }}
           onkeypress={submitTrack}
