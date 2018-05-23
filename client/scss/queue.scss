@@ -1,10 +1,12 @@
+@import 'variables';
+
 table {
   width: 100%;
   border-collapse: collapse;
 
   tr {
     font-size: 1rem;
-    border-bottom: 1px solid #e9e9e9;
+    border-bottom: 1px solid $light-border-color;
   }
 
   th, td {
@@ -15,11 +17,11 @@ table {
     font-size: .9rem;
     text-align: left;
     text-transform: uppercase;
-    color: #444;
+    color: $text-color-secondary;
   }
 
   td {
-    color: #222;
+    color: $text-color;
   }
 }
 
@@ -28,7 +30,7 @@ table {
 }
 
 .track-name-mobile {
-  color: #222;
+  color: $text-color;
   margin-bottom: .5rem;
   font-size: 1.15rem;
   font-weight: 700;
@@ -36,7 +38,7 @@ table {
 
 .track-info-mobile {
   font-size: .9rem;
-  color: #777;
+  color: $text-color-subdued;
 }
 
 .delimiter-mobile {
@@ -44,18 +46,18 @@ table {
 }
 
 .remove {
-  color: #444;
+  color: $text-color-secondary;
   transition: color .25s ease;
   cursor: pointer;
 
   &:hover {
-    color: #222;
+    color: $text-color;
   }
 }
 
 .no-track {
   margin-top: 1rem;
-  color: #444;
+  color: $text-color-secondary;
   font-size: 1.25rem;
   text-align: center;
 }

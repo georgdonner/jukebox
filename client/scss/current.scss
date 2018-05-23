@@ -1,3 +1,5 @@
+@import 'variables';
+
 #current {
   display: flex;
   align-items: center;
@@ -20,11 +22,11 @@
   #current-song {
     padding-top: 1rem;
     font-weight: 700;
-    color: #222;
+    color: $text-color;
   }
   
   #current-artist {
     padding-top: .5rem;
-    color: #777;
+    color: $text-color-subdued;
   }
 }
