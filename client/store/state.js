@@ -7,4 +7,7 @@ export default {
   allTracks: true,
   timeout: null,
   error: null,
+  queue: null,
+  users: null,
+  current: null,
 };

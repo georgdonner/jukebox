@@ -1,3 +1,5 @@
+import defaultState from './state';
+
 export default {
   setSessionStatus: status => () => ({ sessionActive: status }),
   setSessionPassword: sessionPassword => () => ({ sessionPassword }),
@@ -19,4 +21,5 @@ export default {
   toggleQueue: () => state => ({ allTracks: !state.allTracks }),
   updateSearchResults: searchResults => () => ({ searchResults }),
   setError: error => () => ({ error }),
+  resetState: () => () => (Object.assign(defaultState, { sessionActive: true })),
 };

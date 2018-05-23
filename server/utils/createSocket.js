@@ -24,6 +24,11 @@ module.exports = (io, db, spotify) => {
       }
     });
 
+    socket.on('session leave', (username) => {
+      db.removeUser(username);
+      io.emit('queue update', db.getState());
+    });
+
     socket.on('username', username => handleUsername(username));
 
     socket.on('new track', async ({ username, uri }) => {

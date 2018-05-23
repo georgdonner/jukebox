@@ -10,6 +10,7 @@ import Controls from './components/controls';
 import Input from './components/input';
 import Queue from './components/queue';
 import SortableQueue from './components/sortableQueue';
+import LeaveSession from './components/leaveSession';
 import './scss/main.scss';
 
 const socket = io.connect();
@@ -31,6 +32,10 @@ socket.on('server error', (error) => {
 
 const view = (state, actions) => {
   const sessionLogin = password => socket.emit('session login', password);
+  const leaveSession = () => {
+    actions.resetState();
+    socket.emit('session leave', state.username);
+  };
   const setUsername = username => socket.emit('username', username);
   const submitTrack = (uri) => {
     const trackUri = uri || state.trackInput;
@@ -93,6 +98,7 @@ const view = (state, actions) => {
             onReorder={reorderQueue}
             onRemove={removeTrack}
           />}
+        <LeaveSession onClick={leaveSession} />
       </main>
     ) : <div>Loading...</div>;
   }
