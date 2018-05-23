@@ -26,11 +26,11 @@ class Spotify {
       json: true,
     };
     if (uri) options.body = { uris: [uri] };
-    request.put('https://api.spotify.com/v1/me/player/play', options);
+    return request.put('https://api.spotify.com/v1/me/player/play', options);
   }
 
   pause() {
-    request.put('https://api.spotify.com/v1/me/player/pause', {
+    return request.put('https://api.spotify.com/v1/me/player/pause', {
       auth: { bearer: this.accessToken },
     });
   }

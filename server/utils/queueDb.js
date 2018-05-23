@@ -63,7 +63,14 @@ class QueueDb {
       .write();
   }
 
-  nextTrack() {
+  getNext() {
+    const state = this.db.getState();
+    const queue = QueueDb.mergeQueues(state);
+    if (queue.length === 0) return null;
+    return queue[0].track;
+  }
+
+  setNextToCurrent() {
     const state = this.db.getState();
     const queue = QueueDb.mergeQueues(state);
     if (queue.length === 0) return null;

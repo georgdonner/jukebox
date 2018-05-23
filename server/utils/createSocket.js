@@ -1,3 +1,5 @@
+const errors = require('./errors');
+
 module.exports = (io, db, spotify) => {
   io.on('connection', (socket) => {
     socket.emit('session status', db.getSession().active);
@@ -25,44 +27,66 @@ module.exports = (io, db, spotify) => {
     socket.on('username', username => handleUsername(username));
 
     socket.on('new track', async ({ username, uri }) => {
-      const info = await spotify.getTrackInfo(uri);
-      db.addTrack(username, info);
-      io.emit('queue update', db.getState());
+      try {
+        const info = await spotify.getTrackInfo(uri);
+        db.addTrack(username, info);
+        io.emit('queue update', db.getState());
+      } catch (error) {
+        errors.handleSpotifyError(socket, error);
+      }
     });
 
-    socket.on('play', () => {
-      const state = db.getState();
-      if (state.current.track) {
-        spotify.play();
-        db.setPlaying(true);
-        io.emit('playing', true);
-      } else {
-        const next = db.nextTrack();
-        if (next) {
-          spotify.play(next.uri);
+    socket.on('play', async () => {
+      try {
+        const state = db.getState();
+        if (state.current.track) {
+          await spotify.play();
           db.setPlaying(true);
-          io.emit('queue update', db.getState());
+          io.emit('playing', true);
+        } else {
+          const next = db.getNext();
+          if (next) {
+            await spotify.play(next.uri);
+            db.setNextToCurrent();
+            db.setPlaying(true);
+            io.emit('queue update', db.getState());
+          }
         }
+      } catch (error) {
+        errors.handleSpotifyError(socket, error);
       }
     });
 
     socket.on('pause', () => {
-      spotify.pause();
-      db.setPlaying(false);
-      io.emit('playing', false);
+      try {
+        spotify.pause();
+        db.setPlaying(false);
+        io.emit('playing', false);
+      } catch (error) {
+        errors.handleSpotifyError(socket, error);
+      }
     });
 
-    socket.on('next', () => {
-      const next = db.nextTrack();
-      if (next) {
-        spotify.play(next.uri);
-        io.emit('queue update', db.getState());
+    socket.on('next', async () => {
+      try {
+        const next = db.getNext();
+        if (next) {
+          await spotify.play(next.uri);
+          db.setNextToCurrent();
+          io.emit('queue update', db.getState());
+        }
+      } catch (error) {
+        errors.handleSpotifyError(socket, error);
       }
     });
 
     socket.on('search', async (input) => {
-      const results = await spotify.search(input);
-      socket.emit('search results', results);
+      try {
+        const results = await spotify.search(input);
+        socket.emit('search results', results);
+      } catch (error) {
+        errors.handleSpotifyError(socket, error);
+      }
     });
 
     socket.on('reorder queue', ({ username, oldIndex, newIndex }) => {

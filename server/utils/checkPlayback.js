@@ -1,3 +1,5 @@
+const errors = require('./errors');
+
 module.exports = async (io, db, spotify) => {
   const auth = db.getCredentials();
   if (auth.expires - 10000 < Date.now()) {
@@ -14,11 +16,16 @@ module.exports = async (io, db, spotify) => {
       (playback && playback.progress_ms === 0) &&
       (!playback || !playback.item || !playback.is_playing)
   ) {
-    const next = db.nextTrack();
+    const next = db.getNext();
     if (next) {
-      spotify.play(next.uri);
-      db.setPlaying(true);
-      io.emit('queue update', db.getState());
+      try {
+        await spotify.play(next.uri);
+        db.setNextToCurrent();
+        db.setPlaying(true);
+        io.emit('queue update', db.getState());
+      } catch (error) {
+        errors.handleSpotifyError(io, error);
+      }
     }
   }
 };
