@@ -6,7 +6,9 @@
   position: relative;
   margin: .5rem auto;
   margin-top: .75rem;
-
+  padding: 10px 50px;
+  background-color: $green;
+  border-radius: 5px;
   i {
     cursor: pointer;
   }
@@ -15,6 +17,10 @@
 .main-control {
   font-size: 2rem;
   color: $text-color;
+}
+
+.main-control::after {
+  background-color: $dark;
 }
 
 #next {
