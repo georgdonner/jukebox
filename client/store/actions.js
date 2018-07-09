@@ -19,7 +19,15 @@ export default {
     setPlaying: isPlaying => () => ({ isPlaying }),
   },
   toggleQueue: () => state => ({ allTracks: !state.allTracks }),
-  updateSearchResults: searchResults => () => ({ searchResults }),
+  updateSearchResults: searchResults => (state, actions) => {
+    let results = searchResults;
+    if (state.fetchingResults && searchResults) {
+      results = state.searchResults.concat(searchResults);
+    }
+    actions.setFetchingResults(false);
+    return { searchResults: results };
+  },
+  setFetchingResults: fetchingResults => () => ({ fetchingResults }),
   setError: error => () => ({ error }),
   resetState: () => () => (Object.assign(defaultState, { sessionActive: true })),
 };

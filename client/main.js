@@ -55,7 +55,11 @@ const view = (state, actions) => {
   const reorderQueue = (oldIndex, newIndex) => socket.emit('reorder queue', { username: state.username, oldIndex, newIndex });
   const removeTrack = trackId => socket.emit('remove track', { username: state.username, trackId });
   const search = (input) => {
-    socket.emit('search', input);
+    socket.emit('search', { input });
+  };
+  const fetchMore = (input) => {
+    actions.setFetchingResults(true);
+    socket.emit('search', { input, offset: state.searchResults.length / 20 });
   };
 
   let content;
@@ -90,6 +94,7 @@ const view = (state, actions) => {
         <Input
           onSubmit={submitTrack}
           onSearch={search}
+          fetchMore={fetchMore}
         />
         {state.allTracks ?
           <Queue /> :

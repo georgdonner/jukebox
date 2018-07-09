@@ -52,13 +52,13 @@ class Spotify {
     });
   }
 
-  async search(input) {
+  async search(input, offset) {
     const res = await request.get('https://api.spotify.com/v1/search', {
       auth: { bearer: this.accessToken },
       qs: {
         q: input,
         type: 'track',
-        limit: 5,
+        offset,
       },
       json: true,
     });

@@ -93,9 +93,9 @@ module.exports = (io, db, spotify) => {
       }
     });
 
-    socket.on('search', async (input) => {
+    socket.on('search', async ({ input, offset = 0 }) => {
       try {
-        const results = await spotify.search(input);
+        const results = await spotify.search(input, offset);
         socket.emit('search results', results);
       } catch (error) {
         errors.handleSpotifyError(socket, error);

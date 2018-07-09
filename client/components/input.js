@@ -4,14 +4,26 @@ import '../scss/input.scss';
 
 const isSpotifyUri = input => input.startsWith('spotify') && input.split(':').length === 3;
 
-export default ({ onSearch, onSubmit }) => (state, actions) => {
+export default ({ onSearch, onSubmit, fetchMore }) => (state, actions) => {
   const submitTrack = (e) => {
     if (e.keyCode === 13 && isSpotifyUri(state.trackInput)) { // ENTER
       onSubmit();
     }
   };
   const results = state.searchResults ? (
-    <div id="search-results">
+    <div
+      id="search-results"
+      onscroll={(e) => {
+        const { scrollTop, scrollTopMax } = e.target;
+        if (
+          ((scrollTopMax - scrollTop) < 300) &&
+          (state.searchResults.length % 20 === 0) &&
+          !state.fetchingResults
+        ) {
+          fetchMore(state.trackInput);
+        }
+      }}
+    >
       {state.searchResults.map(track => (
         <SearchResult track={track} onClick={onSubmit} />
       ))}
@@ -33,7 +45,10 @@ export default ({ onSearch, onSubmit }) => (state, actions) => {
             actions.setTrackInput(input);
             clearTimeout(state.timeout);
             const timeout = setTimeout(() => {
-              if (input.length > 2 && !isSpotifyUri(input)) onSearch(input);
+              if (input.length > 2 && !isSpotifyUri(input)) {
+                onSearch(input);
+                document.getElementById('search-results').scrollTop = 0;
+              }
             }, 250);
             actions.setTimeout(timeout);
           }}
