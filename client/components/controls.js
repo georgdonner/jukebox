@@ -15,9 +15,7 @@ export default ({
     <div id="controls">
       <div class="wrapper">
         <IconButton classes={`main-control fas fa-${current.isPlaying ? 'pause' : 'play'}-circle`} onClick={toggle} />
-        {queue.length > 0 ? (
-          <IconButton id="next" classes="fas fa-step-forward" onClick={next} />
-        ) : null}
+        <IconButton id="next" classes="fas fa-step-forward" onClick={next} />
       </div>
     </div>
   );

@@ -29,8 +29,25 @@ class Spotify {
     return request.put('https://api.spotify.com/v1/me/player/play', options);
   }
 
+  playContext(context) {
+    const options = {
+      auth: { bearer: this.accessToken },
+      json: true,
+      body: { context_uri: context.uri },
+    };
+    const contextType = context.uri.split(':')[1];
+    if (contextType !== 'artist') options.body.uri = context.trackUri;
+    return request.put('https://api.spotify.com/v1/me/player/play', options);
+  }
+
   pause() {
     return request.put('https://api.spotify.com/v1/me/player/pause', {
+      auth: { bearer: this.accessToken },
+    });
+  }
+
+  next() {
+    return request.post('https://api.spotify.com/v1/me/player/next', {
       auth: { bearer: this.accessToken },
     });
   }

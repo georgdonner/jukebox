@@ -75,10 +75,18 @@ module.exports = (io, db, spotify) => {
     socket.on('next', async () => {
       try {
         const next = db.getNext();
+        const context = db.getContext();
         if (next) {
           await spotify.play(next.uri);
           db.setNextToCurrent();
           io.emit('queue update', db.getState());
+        } else if (db.isExternal()) {
+          spotify.next();
+        } else if (context) {
+          await spotify.playContext(context);
+          await spotify.next();
+          db.setExternal(true);
+          db.setPlaying(true);
         }
       } catch (error) {
         errors.handleSpotifyError(socket, error);

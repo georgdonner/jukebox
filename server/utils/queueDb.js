@@ -86,12 +86,32 @@ class QueueDb {
     return track;
   }
 
+  setCurrentTrack(track) {
+    this.db.set('current.track', track).write();
+  }
+
   getPlaying() {
     return this.db.get('current.isPlaying').value();
   }
 
   setPlaying(isPlaying) {
     this.db.set('current.isPlaying', isPlaying).write();
+  }
+
+  setContext(context) {
+    this.db.set('context', context).write();
+  }
+
+  getContext() {
+    return this.db.get('context').value();
+  }
+
+  setExternal(isExternal) {
+    this.db.set('current.isExternal', isExternal).write();
+  }
+
+  isExternal() {
+    return this.db.get('current.isExternal').value();
   }
 
   getCredentials() {

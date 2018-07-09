@@ -51,7 +51,7 @@ const init = async () => {
     app.get('/wake', (req, res) => res.sendStatus(200));
     const keepAwake = setInterval(() => {
       const { queue } = db.getState();
-      const sessionExpired = db.getSession().lastUpdate < Date.now() - (1000 * 60 * 30);
+      const sessionExpired = db.getSession().lastUpdate < Date.now() - (1000 * 60 * 60);
       if (db.getSession().active && queue.length > 0 && !sessionExpired) {
         http.get(`http://localhost:${port}/wake`);
       } else {
