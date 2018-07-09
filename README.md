@@ -20,6 +20,7 @@ yarn install
 ## Setup
 
 - Create a new application in the [Spotify Developer Dashboard](https://beta.developer.spotify.com/dashboard/applications).
+- There, click on **Edit Settings** and add `http://localhost:8000/token` as the **Redirect URI**.
 - Create a file `.env` at the root of the directory and add the credentials like so:
 ```
 CLIENT_ID=243875098324jf9pj9n84ru
@@ -33,8 +34,11 @@ yarn setup
 
 # go to http://localhost:8000 and authorize your account
 
+# build the project
+yarn build
+
 # start the server
 yarn start
 
-# see the app live in action at http://localhost:8080 🎉
+# see the app live in action at http://localhost:8000 🎉
 ```

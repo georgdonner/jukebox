@@ -31,9 +31,12 @@ const init = async () => {
   const server = http.Server(app);
   const io = createSocket(socketio(server), db, spotify);
 
-  const port = process.env.PORT || 8080;
+  const port = process.env.PORT || 8000;
 
-  server.listen(port);
+  server.listen(port, () => {
+    // eslint-disable-next-line no-console
+    console.log(`Please open http://localhost:${port} in your browser.`);
+  });
 
   app.use(express.static(path.resolve('build')));
 
