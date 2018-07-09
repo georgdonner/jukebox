@@ -24,27 +24,33 @@ app.get('/login', (req, res) => {
   res.redirect(url);
 });
 
-app.get('/token', async (req) => {
+app.get('/token', async (req, res) => {
   const { code } = req.query;
-  const data = await request.post('https://accounts.spotify.com/api/token', {
-    form: {
-      code,
-      grant_type: 'authorization_code',
-      redirect_uri: redirect,
-      client_id: process.env.CLIENT_ID,
-      client_secret: process.env.CLIENT_SECRET,
-    },
-    json: true,
-  });
-  saveCredentials(data);
-  fs.appendFile('.env', `\nREFRESH_TOKEN=${data.refresh_token}`, (err) => {
-    if (err) throw err;
-    else {
-      // eslint-disable-next-line no-console
-      console.log('Successfully saved authentication data.');
-      process.exit();
-    }
-  });
+  try {
+    const data = await request.post('https://accounts.spotify.com/api/token', {
+      form: {
+        code,
+        grant_type: 'authorization_code',
+        redirect_uri: redirect,
+        client_id: process.env.CLIENT_ID,
+        client_secret: process.env.CLIENT_SECRET,
+      },
+      json: true,
+    });
+    saveCredentials(data);
+    fs.appendFile('.env', `\nREFRESH_TOKEN=${data.refresh_token}`, (err) => {
+      if (err) throw err;
+      else {
+        // eslint-disable-next-line no-console
+        console.log('Successfully saved authentication data.');
+        process.exit();
+      }
+    });
+    res.send('Authentication successful! Please close the server.');
+  } catch (error) {
+    res.statusCode(400);
+    res.send(`Something went wrong: ${error.message}. You can now close the server.`);
+  }
 });
 
 app.listen(port, () => {
