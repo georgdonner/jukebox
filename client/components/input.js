@@ -14,7 +14,8 @@ export default ({ onSearch, onSubmit, fetchMore }) => (state, actions) => {
     <div
       id="search-results"
       onscroll={(e) => {
-        const { scrollTop, scrollTopMax } = e.target;
+        const { scrollTop, scrollHeight, clientHeight } = e.target;
+        const scrollTopMax = e.target.scrollTopMax || scrollHeight - clientHeight;
         if (
           ((scrollTopMax - scrollTop) < 300) &&
           (state.searchResults.length % 20 === 0) &&
@@ -47,7 +48,8 @@ export default ({ onSearch, onSubmit, fetchMore }) => (state, actions) => {
             const timeout = setTimeout(() => {
               if (input.length > 2 && !isSpotifyUri(input)) {
                 onSearch(input);
-                document.getElementById('search-results').scrollTop = 0;
+                const resultsContainer = document.getElementById('search-results');
+                if (resultsContainer) resultsContainer.scrollTop = 0;
               }
             }, 250);
             actions.setTimeout(timeout);
