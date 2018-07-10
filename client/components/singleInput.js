@@ -1,9 +1,11 @@
 import { h } from 'hyperapp';
+import Header from './header';
 
 export default ({
   placeholder, onChange, onSubmit, type, value,
 }) => (
   <div id="single-input">
+    <Header moreInfo />
     <input
       type={type || 'text'}
       placeholder={placeholder || ''}
