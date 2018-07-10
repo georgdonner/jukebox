@@ -29,15 +29,18 @@ module.exports = async (io, db, spotify) => {
       db.setPlaying(true);
       io.emit('queue update', db.getState());
     };
-    if (next && db.isExternal() && playback &&
-        playback.progress_ms && (playback.item.duration_ms - playback.progress_ms < 5500)
+    if (!playback) {
+      throw new Error('No playback found.');
+    } else if (
+      next && db.isExternal() &&
+      playback.progress_ms && (playback.item.duration_ms - playback.progress_ms < 5500)
     ) {
       // tracks in queue have priority over current playback
       playNext();
-    } else if
-    (current.track &&
-      (playback && playback.progress_ms === 0) &&
-      (!playback || !playback.item || !playback.is_playing)
+    } else if (
+      current.track &&
+      playback.progress_ms === 0 &&
+      (!playback.item || !playback.is_playing)
     ) {
       // playback has stopped
       const context = db.getContext();
