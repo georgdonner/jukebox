@@ -6,7 +6,9 @@
   position: relative;
   margin: .5rem auto;
   margin-top: .75rem;
-
+  padding: 10px 60px;
+  background-color: $green;
+  border-radius: 5px;
   i {
     cursor: pointer;
   }
@@ -17,11 +19,15 @@
   color: $text-color;
 }
 
+.main-control::after {
+  background-color: $dark;
+}
+
 #next {
   position: absolute;
   font-size: 1.25rem;
-  color: $text-color-secondary;
-  padding-top: .33rem;
+  color: $light-border-color;
+  padding-top: .4rem;
   padding-left: 1.5rem;
 }
 

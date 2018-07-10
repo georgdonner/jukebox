@@ -11,8 +11,24 @@ html, body {
   position: relative;
 }
 
+body {
+  background-color: $bg-color;
+}
+
+h1, h2 {
+  color: $text-color;
+}
+
+h1 {
+  font-size: 2em;
+}
+
+h2 {
+  font-size: 1.5em;
+}
+
 #outer-wrapper {
-  height: inherit;
+  height: 100%;
 }
 
 #single-input {
@@ -20,9 +36,11 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 
   input {
     width: 400px;
+    margin: 1.5rem 0;
     max-width: 90%;
     font-size: 1.5rem;
     line-height: 2;
@@ -65,18 +83,17 @@ main {
   -webkit-transform: translateX(-50%);
   transform: translateX(-50%);
   margin-top: 1rem;
-  border: 2px solid #e84b4b;
+  border: none;
   border-radius: 10px;
-  background-color: $bg-color;
+  background-color: $dark;
   padding: .5rem 1rem;
   text-transform: uppercase;
-  color: #e84b4b;
+  color: $text-color;
   font-weight: 700;
-  transition: all ease .25s;
   cursor: pointer;
+}
 
-  &:hover {
-    color: $bg-color;
-    background-color: #e84b4b;
-  }
+* {
+  box-sizing: border-box;
+  outline: 0;
 }

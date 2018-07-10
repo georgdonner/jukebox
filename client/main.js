@@ -5,6 +5,7 @@ import actions from './store/actions';
 import state from './store/state';
 import SingleInput from './components/singleInput';
 import Error from './components/error';
+import Header from './components/header';
 import Current from './components/current';
 import Controls from './components/controls';
 import Input from './components/input';
@@ -84,6 +85,7 @@ const view = (state, actions) => {
     ) : null;
     content = state.current && state.queue ? (
       <main>
+        <Header />
         {current}
         <Controls
           toggle={playPause}
