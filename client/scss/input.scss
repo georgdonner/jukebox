@@ -28,13 +28,17 @@
   border: none;
   padding: 0 1rem;
   text-transform: uppercase;
-  color: $text-color-secondary;
+  color: $text-color;
   font-weight: 700;
   transition: background-color ease .25s;
   cursor: pointer;
 
   &.not-rounded {
     border-bottom-right-radius: 0;
+  }
+
+  &:hover {
+    background-color: $green;
   }
 
   @media screen and (max-width: 1200px) {
@@ -66,7 +70,7 @@
     }
 
     .track-artists-search {
-      color: $text-color-subdued;
+      color: $light-border-color;
     }
 
     &:not(:last-child) {
@@ -74,7 +78,13 @@
     }
 
     &:hover {
-      background-color: $light-border-color; 
+      background-color: $light-border-color;
+      .track-name-search {
+        color: $dark;
+      }
+      .track-artists-search {
+        color: $dark-grey;
+      }
     }
   }
 }
